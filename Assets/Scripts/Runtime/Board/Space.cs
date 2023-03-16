@@ -112,7 +112,7 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
             if (BoardManager.Instance.TargetSpace == null)
                 return;
 
-            GetTopCard().DisplayOnTopOfStack();
+            //GetTopCard().DisplayOnTopOfStack();
             BoardManager.Instance.HideOriginActionIndicator();
             BoardManager.Instance.PerformAction();
             BoardManager.Instance.ClearSpaceReferences();

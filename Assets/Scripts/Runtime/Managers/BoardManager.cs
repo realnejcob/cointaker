@@ -25,17 +25,15 @@ public class BoardManager : MonoBehaviour {
 
     private List<int> coinDistribution;
 
+    [Header("Debug:")]
+    public StateIndicator stateIndicator;
+
     private void Awake() {
         if (Instance != null) {
             Destroy(gameObject);
         }
 
         Instance = this;
-    }
-
-    private void Start() {
-        CreateBoard();
-        SetupCards();
     }
 
     private void Update() {
@@ -51,9 +49,11 @@ public class BoardManager : MonoBehaviour {
         Grid.DrawGizmo();
     }
 
-    private void CreateBoard() {
+    public void CreateBoard() {
         Board = Instantiate(boardPrefab);
         Board.Setup();
+
+        SetupCards();
     }
 
     private void SetupCards() {
