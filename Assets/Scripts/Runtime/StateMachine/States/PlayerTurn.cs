@@ -30,27 +30,27 @@ public class PlayerTurn : State {
     }
 
     public override IEnumerator MouseDown() {
+        if (CanBeNewOrigin(BattleSystem.TargetSpace) == false)
+            yield break;
+
         BattleSystem.OriginSpace = BattleSystem.TargetSpace;
-
-        if (BattleSystem.OriginSpace == null)
-            yield break;
-
-        if (BattleSystem.OriginSpace.IsFree) {
-            BattleSystem.OriginSpace = null;
-            yield break;
-        }
-
-        if (BattleSystem.OriginSpace.GetTopCard().alignment != AlignmentType.PLAYER) {
-            BattleSystem.OriginSpace = null;
-            yield break;
-        }
-
-        if (!BattleSystem.OriginSpace.GetIsMoveable()) {
-            BattleSystem.OriginSpace = null;
-            yield break;
-        }
-
         BattleSystem.OriginSpace.GetTopCard().FindMovableSpaces();
+    }
+
+    public bool CanBeNewOrigin(Space spaceToCheck) {
+        if (spaceToCheck == null)
+            return false;
+
+        if (spaceToCheck.IsFree)
+            return false;
+
+        if (spaceToCheck.GetTopCard().alignment != AlignmentType.PLAYER)
+            return false;
+
+        if (!spaceToCheck.GetIsMoveable()) 
+            return false;
+
+        return true;
     }
 
     #region -- ACTIONS --
