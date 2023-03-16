@@ -8,7 +8,7 @@ public class EnemyTelegraph : State
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Enemy telegraph");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Enemy telegraph");
 
         // Pick enemy card(s) to move
 

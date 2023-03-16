@@ -7,7 +7,7 @@ public class PlayerTurn : State {
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Player turn");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Player turn");
         yield break;
     }
 
@@ -25,7 +25,7 @@ public class PlayerTurn : State {
         ClearSpaceReferences();
 
         if (BattleSystem.coinsReserve > 0) {
-            BattleSystem.SetState(new CoinsRedistribute(BattleSystem));
+            BattleSystem.SetState(new CoinRedistribute(BattleSystem));
             yield break;
         } else {
             BattleSystem.SetState(new EnemyTurn(BattleSystem));

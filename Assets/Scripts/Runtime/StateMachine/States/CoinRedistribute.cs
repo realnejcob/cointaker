@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoinsRedistribute : State {
-    public CoinsRedistribute(BattleSystem battlesystem) : base(battlesystem) {
+public class CoinRedistribute : State {
+    public CoinRedistribute(BattleSystem battlesystem) : base(battlesystem) {
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Coins redistribute");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Coins redistribute");
+        BattleSystem.boardManager.debugView.SetCoinReserveText(BattleSystem.coinsReserve.ToString());
         yield break;
     }
 
@@ -27,6 +28,7 @@ public class CoinsRedistribute : State {
 
         topCard.AddCoins(1);
         BattleSystem.coinsReserve -= 1;
+        BattleSystem.boardManager.debugView.SetCoinReserveText(BattleSystem.coinsReserve.ToString());
 
         if (BattleSystem.coinsReserve == 0)
             BattleSystem.SetState(new EnemyTurn(BattleSystem));

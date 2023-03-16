@@ -28,6 +28,7 @@ public abstract class Card : MonoBehaviour {
     [SerializeField] private ActionIndicator actionIndicator;
     [SerializeField] private HealthIndicator healthIndicator;
     [SerializeField] private StackCounter stackCounter;
+    [SerializeField] private GameObject selectedOutline;
 
     public Canvas Canvas { get; private set; }
 
@@ -74,6 +75,8 @@ public abstract class Card : MonoBehaviour {
         UpdateCoinsDisplay();
         descriptionTMP.text = GetDescriptionText();
         cardGraphicImage.sprite = graphic;
+
+        selectedOutline.SetActive(false);
     }
 
     private string GetDescriptionText() {
@@ -254,6 +257,18 @@ public abstract class Card : MonoBehaviour {
 
     private void UpdateCoinsDisplay() {
         coinsTMP.text = coins.ToString();
+    }
+
+    public void ShowSelectedOutline() {
+        if (alignment != AlignmentType.PLAYER)
+            return;
+        selectedOutline.SetActive(true);
+    }
+
+    public void HideSelectedOutline() {
+        if (alignment != AlignmentType.PLAYER)
+            return;
+        selectedOutline.SetActive(false);
     }
     #endregion
 }

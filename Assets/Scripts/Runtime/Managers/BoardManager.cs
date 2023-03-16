@@ -24,7 +24,7 @@ public class BoardManager : MonoBehaviour {
     private List<int> coinDistribution;
 
     [Header("Debug:")]
-    public StateIndicator stateIndicator;
+    public DebugView debugView;
 
 
     private void Awake() {

@@ -7,7 +7,7 @@ public class EnemyTurn : State {
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Enemy Turn");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Enemy Turn");
 
         // Perform action(s) of card(s) chosen in the enemy telegraph state
 
