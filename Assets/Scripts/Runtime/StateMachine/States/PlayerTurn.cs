@@ -7,15 +7,15 @@ public class PlayerTurn : State {
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Player Turn");
+        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Player turn");
         yield break;
     }
 
     public override IEnumerator MouseUp() {
-        if (BattleSystem.OriginSpace == null)
+        if (BattleSystem.originSpace == null)
             yield break;
 
-        BattleSystem.OriginSpace.GetTopCard().DisplayOnTopOfStack();
+        BattleSystem.originSpace.GetTopCard().DisplayOnTopOfStack();
 
         var action = GetAction();
         if (action == ActionType.NONE)
@@ -24,23 +24,23 @@ public class PlayerTurn : State {
         PerformAction(action);
         ClearSpaceReferences();
 
-        // Check if the player has coins to redistribute
-            // Redestribute coins
-
-        // If player has all coins, go to win state
-
-        // Else, continue to enemy turn
-        BattleSystem.SetState(new EnemyTurn(BattleSystem));
-        yield break;
+        if (BattleSystem.coinsReserve > 0) {
+            BattleSystem.SetState(new CoinsRedistribute(BattleSystem));
+            yield break;
+        } else {
+            BattleSystem.SetState(new EnemyTurn(BattleSystem));
+            yield break;
+        }
+        
     }
 
     public override IEnumerator MouseDown() {
-        if (CanBeNewOrigin(BattleSystem.TargetSpace) == false)
+        if (CanBeNewOrigin(BattleSystem.targetSpace) == false)
             yield break;
 
-        BattleSystem.OriginSpace = BattleSystem.TargetSpace;
-        BattleSystem.OriginSpace.GetTopCard().CheckMoveableSpaces();
-        BattleSystem.OriginSpace.GetTopCard().DisplayOnTopOfAll();
+        BattleSystem.originSpace = BattleSystem.targetSpace;
+        BattleSystem.originSpace.GetTopCard().CheckMoveableSpaces();
+        BattleSystem.originSpace.GetTopCard().DisplayOnTopOfAll();
     }
 
     public bool CanBeNewOrigin(Space spaceToCheck) {
@@ -92,40 +92,46 @@ public class PlayerTurn : State {
     }
 
     private void Move() {
-        var cardToMove = BattleSystem.OriginSpace.GetTopCard();
-        BattleSystem.OriginSpace.RemoveFromSpace(cardToMove);
+        var cardToMove = BattleSystem.originSpace.GetTopCard();
+        BattleSystem.originSpace.RemoveFromSpace(cardToMove);
 
-        cardToMove.transform.SetParent(BattleSystem.TargetSpace.transform);
-        BattleSystem.TargetSpace.AddToSpace(cardToMove);
+        cardToMove.transform.SetParent(BattleSystem.targetSpace.transform);
+        BattleSystem.targetSpace.AddToSpace(cardToMove);
 
         cardToMove.RefreshDesiredPosition();
         cardToMove.StartMoveZoomTween();
 
-        BattleSystem.TargetSpace.GetTopCard().SetStackCounter(BattleSystem.TargetSpace.CardsCount);
-        BattleSystem.TargetSpace.GetTopCard().UpdateStackBuff();
+        BattleSystem.targetSpace.GetTopCard().SetStackCounter(BattleSystem.targetSpace.CardsCount);
+        BattleSystem.targetSpace.GetTopCard().UpdateStackBuff();
     }
 
     private void Stack() {
-        BattleSystem.TargetSpace.MoveCoinsToTopCard();
-        BattleSystem.TargetSpace.GetTopCard().UpdateStackBuff();
+        BattleSystem.targetSpace.MoveCoinsToTopCard();
+        BattleSystem.targetSpace.GetTopCard().UpdateStackBuff();
     }
 
     private void Eliminate() {
-        var originTopCard = BattleSystem.OriginSpace.GetTopCard();
-        var targetTopCard = BattleSystem.TargetSpace.GetTopCard();
+        var originTopCard = BattleSystem.originSpace.GetTopCard();
+        var targetTopCard = BattleSystem.targetSpace.GetTopCard();
 
-        StealCoins(originTopCard, targetTopCard, targetTopCard.GetCoinsCount());
+        StealCoins(originTopCard, targetTopCard, targetTopCard.CoinsCount());
         targetTopCard.EliminateCard();
     }
 
     private void Neutralize() {
-        BattleSystem.OriginSpace.GetTopCard().EliminateCard();
-        BattleSystem.TargetSpace.GetTopCard().EliminateCard();
+        var totalCoins = 0;
+        totalCoins += BattleSystem.originSpace.GetTopCard().CoinsCount();
+        totalCoins += BattleSystem.targetSpace.GetTopCard().CoinsCount();
+
+        BattleSystem.originSpace.GetTopCard().EliminateCard();
+        BattleSystem.targetSpace.GetTopCard().EliminateCard();
+
+        BattleSystem.coinsReserve += totalCoins;
     }
 
     private void Attack() {
-        var originTopCard = BattleSystem.OriginSpace.GetTopCard();
-        var targetTopCard = BattleSystem.TargetSpace.GetTopCard();
+        var originTopCard = BattleSystem.originSpace.GetTopCard();
+        var targetTopCard = BattleSystem.targetSpace.GetTopCard();
 
         originTopCard.TakeHitPoint(out var isEliminated);
 
@@ -133,7 +139,7 @@ public class PlayerTurn : State {
     }
 
     private void StealCoins(Card to, Card from, int amount) {
-        if (from.GetCoinsCount() == 0)
+        if (from.CoinsCount() == 0)
             return;
 
         from.RemoveCoins(amount);
@@ -141,39 +147,39 @@ public class PlayerTurn : State {
     }
 
     private void SplitCoins() {
-        if (BattleSystem.OriginSpace.CardsCount <= 1)
+        if (BattleSystem.originSpace.CardsCount <= 1)
             return;
 
-        var topCard = BattleSystem.OriginSpace.GetTopCard();
-        var nextTopCard = BattleSystem.OriginSpace.GetNextTopCard();
+        var topCard = BattleSystem.originSpace.GetTopCard();
+        var nextTopCard = BattleSystem.originSpace.GetNextTopCard();
 
-        var totalCoins = topCard.GetCoinsCount();
+        var totalCoins = topCard.CoinsCount();
         var coinsToMove = Mathf.FloorToInt(totalCoins / 2f);
         StealCoins(nextTopCard, topCard, coinsToMove);
     }
 
     private void RestoreAll() {
-        BattleSystem.OriginSpace.GetTopCard().Restore();
-        BattleSystem.TargetSpace.GetTopCard().Restore();
+        BattleSystem.originSpace.GetTopCard().Restore();
+        BattleSystem.targetSpace.GetTopCard().Restore();
     }
 
     public void ClearSpaceReferences() {
-        BattleSystem.OriginSpace = null;
+        BattleSystem.originSpace = null;
     }
 
     private ActionType GetAction() {
-        if (BattleSystem.OriginSpace == null || BattleSystem.TargetSpace == null)
+        if (BattleSystem.originSpace == null || BattleSystem.targetSpace == null)
             return ActionType.NONE;
 
-        var originTopCard = BattleSystem.OriginSpace.GetTopCard();
-        if (originTopCard.MoveableSpaces.Contains(BattleSystem.TargetSpace) && BattleSystem.TargetSpace.IsFree)
+        var originTopCard = BattleSystem.originSpace.GetTopCard();
+        if (originTopCard.MoveableSpaces.Contains(BattleSystem.targetSpace) && BattleSystem.targetSpace.IsFree)
             return ActionType.MOVE;
-        else if (!originTopCard.MoveableSpaces.Contains(BattleSystem.TargetSpace) && BattleSystem.TargetSpace.IsFree)
+        else if (!originTopCard.MoveableSpaces.Contains(BattleSystem.targetSpace) && BattleSystem.targetSpace.IsFree)
             return ActionType.NONE;
 
-        var targetTopCard = BattleSystem.TargetSpace.GetTopCard();
+        var targetTopCard = BattleSystem.targetSpace.GetTopCard();
 
-        if (originTopCard.MoveableSpaces.Contains(BattleSystem.TargetSpace)) {
+        if (originTopCard.MoveableSpaces.Contains(BattleSystem.targetSpace)) {
             switch (targetTopCard.alignment) {
                 case AlignmentType.NONE:
                     break;

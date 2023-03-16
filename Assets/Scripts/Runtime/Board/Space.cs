@@ -55,7 +55,7 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
     public int GetCoinsOnSpace() {
         var coins = 0;
         foreach (Card card in cards) {
-            coins += card.GetCoinsCount();
+            coins += card.CoinsCount();
         }
         return coins;
     }
@@ -74,11 +74,11 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
 
     #region -- ON POINTER METHODS
     public void OnPointerEnter(PointerEventData eventData) {
-        BoardManager.Instance.battleSystem.TargetSpace = this;
+        BoardManager.Instance.battleSystem.targetSpace = this;
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        BoardManager.Instance.battleSystem.TargetSpace = null;
+        BoardManager.Instance.battleSystem.targetSpace = null;
     }
 
     public void OnPointerDown(PointerEventData eventData) {

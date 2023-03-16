@@ -5,8 +5,9 @@ using UnityEngine;
 public class BattleSystem : StateMachine {
     public BoardManager boardManager;
 
-    [ReadOnly] public Space OriginSpace;
-    [ReadOnly] public Space TargetSpace;
+    [ReadOnly] public Space originSpace;
+    [ReadOnly] public Space targetSpace;
+    [ReadOnly] public int coinsReserve;
 
     private void Start() {
         SetState(new Begin(this));

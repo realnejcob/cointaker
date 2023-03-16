@@ -13,7 +13,7 @@ public class Begin : State
 
         yield return new WaitForSeconds(0.25f);
 
-        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Waiting");
+        BattleSystem.boardManager.stateIndicator.SetIndicatorText("Waiting...");
 
         yield return new WaitForSeconds(1f);
 

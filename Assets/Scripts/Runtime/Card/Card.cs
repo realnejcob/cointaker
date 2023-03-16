@@ -132,7 +132,7 @@ public abstract class Card : MonoBehaviour {
         UpdateCoinsDisplay();
     }
 
-    public int GetCoinsCount() {
+    public int CoinsCount() {
         return coins;
     }
 
