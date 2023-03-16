@@ -139,6 +139,15 @@ public class BoardManager : MonoBehaviour {
         cardInstanceSettings.space.AddToSpace(newCard);
     }
 
+    public List<Direction> GetDirectionsFromSpace(Space from) {
+        var directions = new List<Direction>();
+        var moveableSpaces = from.GetTopCard().MoveableSpaces;
+        foreach (var moveableSpace in moveableSpaces) {
+            directions.Add(GetDirectionFromToSpace(from, moveableSpace));
+        }
+        return directions;
+    }
+
     private Direction GetDirectionFromToSpace(Space from, Space to) {
         var originCoordinate = from.coordinate;
         var targetCoordinate = to.coordinate;

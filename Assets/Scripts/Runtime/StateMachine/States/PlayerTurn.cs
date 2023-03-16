@@ -12,6 +12,11 @@ public class PlayerTurn : State {
     }
 
     public override IEnumerator MouseUp() {
+        if (BattleSystem.OriginSpace == null)
+            yield break;
+
+        BattleSystem.OriginSpace.GetTopCard().DisplayOnTopOfStack();
+
         var action = GetAction();
         if (action == ActionType.NONE)
             yield break;
@@ -34,7 +39,8 @@ public class PlayerTurn : State {
             yield break;
 
         BattleSystem.OriginSpace = BattleSystem.TargetSpace;
-        BattleSystem.OriginSpace.GetTopCard().FindMovableSpaces();
+        BattleSystem.OriginSpace.GetTopCard().CheckMoveableSpaces();
+        BattleSystem.OriginSpace.GetTopCard().DisplayOnTopOfAll();
     }
 
     public bool CanBeNewOrigin(Space spaceToCheck) {

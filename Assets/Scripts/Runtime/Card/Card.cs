@@ -99,12 +99,13 @@ public abstract class Card : MonoBehaviour {
         DynamicRotation();
     }
 
-    public void FindMovableSpaces() {
+    public void CheckMoveableSpaces() {
         MoveableSpaces.Clear();
         MoveableSpaces = BoardManager.Instance.Board.GetMoveableSpaces(GetSpace());
     }
 
-    public void ShowActionIndicator(Direction[] directions) {
+    public void ShowActionIndicator() {
+        var directions = BoardManager.Instance.GetDirectionsFromSpace(GetSpace()).ToArray();
         actionIndicator.Show(directions);
     }
 
