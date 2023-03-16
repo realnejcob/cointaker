@@ -14,7 +14,11 @@ public abstract class State {
         yield break;
     }
 
-    public virtual IEnumerator Action() {
+    public virtual IEnumerator MouseUp() {
+        yield break;
+    }
+
+    public virtual IEnumerator MouseDown() {
         yield break;
     }
 }

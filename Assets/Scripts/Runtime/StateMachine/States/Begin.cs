@@ -11,7 +11,7 @@ public class Begin : State
         BattleSystem.boardManager.stateIndicator.SetIndicatorText("Started");
         BattleSystem.boardManager.CreateBoard();
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.25f);
 
         BattleSystem.boardManager.stateIndicator.SetIndicatorText("Waiting");
 

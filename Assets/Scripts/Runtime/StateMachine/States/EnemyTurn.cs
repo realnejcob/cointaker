@@ -11,7 +11,7 @@ public class EnemyTurn : State {
 
         // Perform action(s) of card(s) chosen in the enemy telegraph state
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.05f);
 
         // Check if player is out of cards, then go to lose state
         // Else, continue game loop starting with telegraph

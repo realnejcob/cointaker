@@ -3,41 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionIndicator : MonoBehaviour {
-    public RectTransform pointerRectTransform;
+    public RectTransform pointerLeftRectTransform;
+    public RectTransform pointerRightRectTransform;
+    public RectTransform pointerUpRectTransform;
+    public RectTransform pointerDownRectTransform;
 
     private void Start() {
-        Hide();
+        HideAll();
     }
 
-    public void SetToDirection(Direction direction) {
-        switch (direction) {
-            case Direction.Left:
-                pointerRectTransform.sizeDelta = new Vector2(1.75f, pointerRectTransform.rect.height);
-                pointerRectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 180));
-                break;
-            case Direction.Right:
-                pointerRectTransform.sizeDelta = new Vector2(1.75f, pointerRectTransform.rect.height);
-                pointerRectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-                break;
-            case Direction.Up:
-                pointerRectTransform.sizeDelta = new Vector2(2.25f, pointerRectTransform.rect.height);
-                pointerRectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
-                break;
-            case Direction.Down:
-                pointerRectTransform.sizeDelta = new Vector2(2.25f, pointerRectTransform.rect.height);
-                pointerRectTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 270));
-                break;
-            default:
-                break;
+    public void Show(Direction[] directions) {
+        foreach (var d in directions) {
+            switch (d) {
+                case Direction.Left:
+                    pointerLeftRectTransform.gameObject.SetActive(true);
+                    break;
+                case Direction.Right:
+                    pointerRightRectTransform.gameObject.SetActive(true);
+                    break;
+                case Direction.Up:
+                    pointerUpRectTransform.gameObject.SetActive(true);
+                    break;
+                case Direction.Down:
+                    pointerDownRectTransform.gameObject.SetActive(true);
+                    break;
+            }
         }
     }
 
-    public void Show() {
-        pointerRectTransform.gameObject.SetActive(true);
-    }
-
-    public void Hide() {
-        pointerRectTransform.gameObject.SetActive(false);
+    public void HideAll() {
+        pointerLeftRectTransform.gameObject.SetActive(false);
+        pointerRightRectTransform.gameObject.SetActive(false);
+        pointerUpRectTransform.gameObject.SetActive(false);
+        pointerDownRectTransform.gameObject.SetActive(false);
     }
 }
 

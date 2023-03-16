@@ -104,13 +104,12 @@ public abstract class Card : MonoBehaviour {
         MoveableSpaces = BoardManager.Instance.Board.GetMoveableSpaces(GetSpace());
     }
 
-    public void ShowActionIndicator(Direction direction) {
-        actionIndicator.Show();
-        actionIndicator.SetToDirection(direction);
+    public void ShowActionIndicator(Direction[] directions) {
+        actionIndicator.Show(directions);
     }
 
     public void HideActionIndicator() {
-        actionIndicator.Hide();
+        actionIndicator.HideAll();
     }
 
     public void SetStackCounter(int counter) {
@@ -168,7 +167,7 @@ public abstract class Card : MonoBehaviour {
         hasEliminated = false;
     }
 
-    public void RestoreHitpoints() {
+    public void Restore() {
         hitPoints = 0;
         healthIndicator.UpdateIndicator(hitPoints);
     }

@@ -74,50 +74,22 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
 
     #region -- ON POINTER METHODS
     public void OnPointerEnter(PointerEventData eventData) {
-        if (!isMoveable)
-            return;
-
-        BoardManager.Instance.TargetSpace = this;
-        BoardManager.Instance.ShowOriginActionIndicator();
+        BoardManager.Instance.battleSystem.TargetSpace = this;
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        BoardManager.Instance.TargetSpace = null;
-        BoardManager.Instance.HideOriginActionIndicator();
+        BoardManager.Instance.battleSystem.TargetSpace = null;
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        if (IsFree)
-            return;
-
-        if (GetTopCard().alignment != AlignmentType.PLAYER)
-            return;
-
-        if (eventData.button == PointerEventData.InputButton.Left) {
-            if (!isMoveable)
-                return;
-
-            ConfigureNewOrigin();
-            GetTopCard().DisplayOnTopOfAll();
-        } else if (eventData.button == PointerEventData.InputButton.Right) {
+        if (eventData.button == PointerEventData.InputButton.Right) {
             GetTopCard().StartZoomPreview();
         }
     }
 
     public void OnPointerUp(PointerEventData eventData) {
-        if (eventData.button == PointerEventData.InputButton.Left) {
-            if (BoardManager.Instance.OriginSpace != this)
-                return;
-
-            if (BoardManager.Instance.TargetSpace == null)
-                return;
-
-            //GetTopCard().DisplayOnTopOfStack();
-            BoardManager.Instance.HideOriginActionIndicator();
-            BoardManager.Instance.PerformAction();
-            BoardManager.Instance.ClearSpaceReferences();
-        } else if (eventData.button == PointerEventData.InputButton.Right) {
-            if (GetTopCard() == null)
+        if (eventData.button == PointerEventData.InputButton.Right) {
+            if (IsFree)
                 return;
 
             GetTopCard().EndZoomPreview();
@@ -125,19 +97,4 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
     }
 
     #endregion
-
-    private void ConfigureNewOrigin() {
-        if (IsFree)
-            return;
-
-        BoardManager.Instance.OriginSpace = this;
-        BoardManager.Instance.OriginSpace.GetTopCard().FindMovableSpaces();
-    }
-
-    public void UpdateStackCounter() {
-        if (IsFree)
-            return;
-
-        GetTopCard().SetStackCounter(CardsCount);
-    }
 }

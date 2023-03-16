@@ -11,6 +11,8 @@ public class BoardManager : MonoBehaviour {
     [SerializeField] private PlayerCard playerCardPrefab;
     [SerializeField] private EnemyCard enemyCardPrefab;
 
+    public BattleSystem battleSystem { get; private set; }
+
     [Space(15)]
 
     public List<CardEntity> playerDeck;
@@ -19,14 +21,11 @@ public class BoardManager : MonoBehaviour {
     private List<PlayerCard> playerCards = new List<PlayerCard>();
     private List<EnemyCard> enemyCards = new List<EnemyCard>();
 
-    [Header("Dynamic References:")]
-    [ReadOnly] public Space OriginSpace;
-    [ReadOnly] public Space TargetSpace;
-
     private List<int> coinDistribution;
 
     [Header("Debug:")]
     public StateIndicator stateIndicator;
+
 
     private void Awake() {
         if (Instance != null) {
@@ -34,15 +33,8 @@ public class BoardManager : MonoBehaviour {
         }
 
         Instance = this;
-    }
 
-    private void Update() {
-        if (Input.GetMouseButtonUp(0)) {
-            if (OriginSpace == null)
-                return;
-
-            OriginSpace = null;
-        }
+        battleSystem = GetComponentInChildren<BattleSystem>();
     }
 
     private void OnDrawGizmos() {
@@ -64,20 +56,6 @@ public class BoardManager : MonoBehaviour {
 
 
         InitializeCards();
-    }
-
-    public void ShowOriginActionIndicator() {
-        if (GetAction() == ActionType.NONE)
-            return;
-
-        OriginSpace.GetTopCard().ShowActionIndicator(GetDirectionFromToSpace(OriginSpace, TargetSpace));
-    }
-
-    public void HideOriginActionIndicator() {
-        if (OriginSpace == null)
-            return;
-
-        OriginSpace.GetTopCard().HideActionIndicator();
     }
 
     private void InstantiateCards() {
@@ -175,154 +153,4 @@ public class BoardManager : MonoBehaviour {
             return Direction.Left;
         }
     }
-
-    #region -- ACTIONS --
-
-    public void PerformAction() {
-        switch (GetAction()) {
-            case ActionType.NONE:
-                break;
-            case ActionType.MOVE:
-                SplitCoins();
-                Move();
-                break;
-            case ActionType.STACK:
-                SplitCoins();
-                RestoreCardHitpoints();
-                Move();
-                Stack();
-                break;
-            case ActionType.ELIMINATE:
-                SplitCoins();
-                Eliminate();
-                Move();
-                break;
-            case ActionType.NEUTRALIZE:
-                Neutralize();
-                break;
-            case ActionType.ATTACK:
-                Attack();
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void Move() {
-        var cardToMove = OriginSpace.GetTopCard();
-        OriginSpace.RemoveFromSpace(cardToMove);
-
-        cardToMove.transform.SetParent(TargetSpace.transform);
-        TargetSpace.AddToSpace(cardToMove);
-
-        cardToMove.RefreshDesiredPosition();
-        cardToMove.StartMoveZoomTween();
-
-        TargetSpace.UpdateStackCounter();
-        TargetSpace.GetTopCard().UpdateStackBuff();
-    }
-
-    private void Stack() {
-        TargetSpace.MoveCoinsToTopCard();
-        TargetSpace.GetTopCard().UpdateStackBuff();
-    }
-
-    private void Eliminate() {
-        var originTopCard = OriginSpace.GetTopCard();
-        var targetTopCard = TargetSpace.GetTopCard();
-
-        StealCoins(originTopCard, targetTopCard, targetTopCard.GetCoinsCount());
-        targetTopCard.EliminateCard();
-    }
-
-    private void Neutralize() {
-        OriginSpace.GetTopCard().EliminateCard();
-        TargetSpace.GetTopCard().EliminateCard();
-    }
-
-    private void Attack() {
-        var originTopCard = OriginSpace.GetTopCard();
-        var targetTopCard = TargetSpace.GetTopCard();
-
-        originTopCard.TakeHitPoint(out var isEliminated);
-
-        StealCoins(originTopCard, targetTopCard, 1);
-    }
-
-    private void StealCoins(Card to, Card from, int amount) {
-        if (from.GetCoinsCount() == 0)
-            return;
-
-        from.RemoveCoins(amount);
-        to.AddCoins(amount);
-    }
-
-    private void SplitCoins() {
-        if (OriginSpace.CardsCount <= 1)
-            return;
-
-        var topCard = OriginSpace.GetTopCard();
-        var nextTopCard = OriginSpace.GetNextTopCard();
-
-        var totalCoins = topCard.GetCoinsCount();
-        var coinsToMove = Mathf.FloorToInt(totalCoins / 2f);
-        StealCoins(nextTopCard, topCard, coinsToMove);
-    }
-
-    private void RestoreCardHitpoints() {
-        OriginSpace.GetTopCard().RestoreHitpoints();
-        TargetSpace.GetTopCard().RestoreHitpoints();
-    }
-
-    public void ClearSpaceReferences() {
-        OriginSpace = null;
-        TargetSpace = null;
-    }
-
-    private ActionType GetAction() {
-        if (OriginSpace == null || TargetSpace == null)
-            return ActionType.NONE;
-
-        var originTopCard = OriginSpace.GetTopCard();
-        if (originTopCard.MoveableSpaces.Contains(TargetSpace) && TargetSpace.IsFree)
-            return ActionType.MOVE;
-        else if (!originTopCard.MoveableSpaces.Contains(TargetSpace) && TargetSpace.IsFree)
-            return ActionType.NONE;
-
-        var targetTopCard = TargetSpace.GetTopCard();
-
-        if (originTopCard.MoveableSpaces.Contains(TargetSpace)) {
-            switch (targetTopCard.alignment) {
-                case AlignmentType.NONE:
-                    break;
-                case AlignmentType.PLAYER:
-                    if (targetTopCard.strength == originTopCard.strength)
-                        return ActionType.STACK;
-                    break;
-                case AlignmentType.OPPONENT:
-                    if (targetTopCard.strength > originTopCard.strength)
-                        return ActionType.ATTACK;
-                    if (originTopCard.strength > targetTopCard.strength)
-                        return ActionType.ELIMINATE;
-                    if (originTopCard.strength == targetTopCard.strength)
-                        return ActionType.NEUTRALIZE;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return ActionType.NONE;
-    }
-
-    #endregion
-}
-
-public enum ActionType {
-    NONE = 0,
-    MOVE = 1,
-    STACK = 2,
-    ELIMINATE = 3,
-    NEUTRALIZE = 4,
-    ATTACK = 5
 }

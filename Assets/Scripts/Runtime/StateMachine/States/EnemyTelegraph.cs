@@ -12,7 +12,7 @@ public class EnemyTelegraph : State
 
         // Pick enemy card(s) to move
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.05f);
 
         BattleSystem.SetState(new PlayerTurn(BattleSystem));
     }
