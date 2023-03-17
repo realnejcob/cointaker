@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 7473001320627898102, guid: c9c7c436d52081b41bc2b6afc8d12616, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9068103378586807531, guid: c9c7c436d52081b41bc2b6afc8d12616, type: 3}
       propertyPath: m_TargetGraphic
       value: 
@@ -290,6 +294,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b556de9cb6ad1a74b967e4f69ba117c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &289480002230474636 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5463975283721877285, guid: c9c7c436d52081b41bc2b6afc8d12616, type: 3}
+  m_PrefabInstance: {fileID: 5753207876827439273}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab78c7093325bf4197978f1fb26f3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4433254184052854356 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8237529176064356093, guid: c9c7c436d52081b41bc2b6afc8d12616, type: 3}
@@ -330,3 +345,4 @@ MonoBehaviour:
   healthIndicator: {fileID: 5630369096545350314}
   stackCounter: {fileID: 4433254184052854356}
   selectedOutline: {fileID: 5534249946926042847}
+  moveDirectionIndicator: {fileID: 289480002230474636}

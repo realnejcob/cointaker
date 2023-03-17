@@ -8,12 +8,12 @@ public class Begin : State
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.debugView.SetIndicatorText("Started");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Started", Color.white);
         BattleSystem.boardManager.CreateBoard();
 
         yield return new WaitForSeconds(0.25f);
 
-        BattleSystem.boardManager.debugView.SetIndicatorText("Waiting...");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Waiting...", Color.white);
 
         yield return new WaitForSeconds(1f);
 

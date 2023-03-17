@@ -7,8 +7,9 @@ public class DebugView : MonoBehaviour {
     public TextMeshProUGUI stateIndicatorTMP;
     public TextMeshProUGUI coinReserveTMP;
 
-    public void SetIndicatorText(string newText) {
+    public void SetIndicatorText(string newText, Color color) {
         stateIndicatorTMP.text = $"STATE: {newText}";
+        stateIndicatorTMP.color = color;
     }
 
     public void SetCoinReserveText(string newText) {

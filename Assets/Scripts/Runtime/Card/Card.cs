@@ -178,6 +178,10 @@ public abstract class Card : MonoBehaviour {
 
     public void EliminateCard() {
         GetSpace().RemoveFromSpace(this);
+        if (alignment == AlignmentType.PLAYER)
+            BoardManager.Instance.PlayerCards.Remove((PlayerCard)this);
+        if (alignment == AlignmentType.ENEMY)
+            BoardManager.Instance.EnemyCards.Remove((EnemyCard)this);
         Destroy(gameObject);
     }
 
@@ -260,14 +264,10 @@ public abstract class Card : MonoBehaviour {
     }
 
     public void ShowSelectedOutline() {
-        if (alignment != AlignmentType.PLAYER)
-            return;
         selectedOutline.SetActive(true);
     }
 
     public void HideSelectedOutline() {
-        if (alignment != AlignmentType.PLAYER)
-            return;
         selectedOutline.SetActive(false);
     }
     #endregion
@@ -276,5 +276,5 @@ public abstract class Card : MonoBehaviour {
 public enum AlignmentType {
     NONE = 0,
     PLAYER = 1,
-    OPPONENT = 2
+    ENEMY = 2
 }

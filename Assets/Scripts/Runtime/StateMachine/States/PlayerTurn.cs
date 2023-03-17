@@ -7,7 +7,7 @@ public class PlayerTurn : State {
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.debugView.SetIndicatorText("Player turn");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Player turn", Color.green);
         yield break;
     }
 
@@ -187,7 +187,7 @@ public class PlayerTurn : State {
                     if (targetTopCard.strength == originTopCard.strength)
                         return ActionType.STACK;
                     break;
-                case AlignmentType.OPPONENT:
+                case AlignmentType.ENEMY:
                     if (targetTopCard.strength > originTopCard.strength)
                         return ActionType.ATTACK;
                     if (originTopCard.strength > targetTopCard.strength)
@@ -211,5 +211,6 @@ public enum ActionType {
     STACK = 2,
     ELIMINATE = 3,
     NEUTRALIZE = 4,
-    ATTACK = 5
+    ATTACK = 5,
+    SHIFT = 6
 }

@@ -18,8 +18,8 @@ public class BoardManager : MonoBehaviour {
     public List<CardEntity> playerDeck;
     public List<CardEntity> enemyDeck;
 
-    private List<PlayerCard> playerCards = new List<PlayerCard>();
-    private List<EnemyCard> enemyCards = new List<EnemyCard>();
+    public List<PlayerCard> PlayerCards { get; set; } = new List<PlayerCard>();
+    public List<EnemyCard> EnemyCards { get; set; } = new List<EnemyCard>();
 
     private List<int> coinDistribution;
 
@@ -64,27 +64,27 @@ public class BoardManager : MonoBehaviour {
         InstantiatePlayerCard(new Vector2Int(1, 2));
         InstantiatePlayerCard(new Vector2Int(2, 2));
 
-        InstantiateOpponentCard(new Vector2Int(1, 0));
-        InstantiateOpponentCard(new Vector2Int(2, 0));
-        InstantiateOpponentCard(new Vector2Int(0, 1));
-        InstantiateOpponentCard(new Vector2Int(3, 1));
-        InstantiateOpponentCard(new Vector2Int(0, 2));
-        InstantiateOpponentCard(new Vector2Int(3, 2));
-        InstantiateOpponentCard(new Vector2Int(1, 3));
-        InstantiateOpponentCard(new Vector2Int(2, 3));
+        InstantiateOpponentCard(new Vector2Int(1, 0), Direction.Up);
+        InstantiateOpponentCard(new Vector2Int(2, 0), Direction.Up);
+        InstantiateOpponentCard(new Vector2Int(0, 1), Direction.Right);
+        InstantiateOpponentCard(new Vector2Int(3, 1), Direction.Left);
+        InstantiateOpponentCard(new Vector2Int(0, 2), Direction.Right);
+        InstantiateOpponentCard(new Vector2Int(3, 2), Direction.Left);
+        InstantiateOpponentCard(new Vector2Int(1, 3), Direction.Down);
+        InstantiateOpponentCard(new Vector2Int(2, 3), Direction.Down);
     }
 
     private void InitializeCards() {
         coinDistribution = GetCoinDistribution();
 
-        for (int i = 0; i < playerCards.Count; i++) {
-            var card = playerCards[i];
+        for (int i = 0; i < PlayerCards.Count; i++) {
+            var card = PlayerCards[i];
             card.Initialize(playerDeck[i]);
             card.name = $"PlayerCard [{card.displayName}]";
         }
 
-        for (int i = 0; i < enemyCards.Count; i++) {
-            var card = enemyCards[i];
+        for (int i = 0; i < EnemyCards.Count; i++) {
+            var card = EnemyCards[i];
             card.SetCoins(coinDistribution[i]);
             card.Initialize(enemyDeck[i]);
             card.name = $"EnemyCard [{card.displayName}]";
@@ -123,19 +123,20 @@ public class BoardManager : MonoBehaviour {
 
         var newCard = (PlayerCard)InstantiateCard(cardInstanceSettings);
         newCard.alignment = AlignmentType.PLAYER;
-        playerCards.Add(newCard);
+        PlayerCards.Add(newCard);
         cardInstanceSettings.space.AddToSpace(newCard);
     }
 
-    private void InstantiateOpponentCard(Vector2Int coordinate) {
+    private void InstantiateOpponentCard(Vector2Int coordinate, Direction initMoveDirection) {
         var cardInstanceSettings = new CardInstanceSettings() {
             prefab = enemyCardPrefab,
             space = Board.Spaces[coordinate.x, coordinate.y]
         };
 
         var newCard = (EnemyCard)InstantiateCard(cardInstanceSettings);
-        newCard.alignment = AlignmentType.OPPONENT;
-        enemyCards.Add(newCard);
+        newCard.alignment = AlignmentType.ENEMY;
+        newCard.MoveDirection = initMoveDirection;
+        EnemyCards.Add(newCard);
         cardInstanceSettings.space.AddToSpace(newCard);
     }
 
@@ -148,7 +149,7 @@ public class BoardManager : MonoBehaviour {
         return directions;
     }
 
-    private Direction GetDirectionFromToSpace(Space from, Space to) {
+    public Direction GetDirectionFromToSpace(Space from, Space to) {
         var originCoordinate = from.coordinate;
         var targetCoordinate = to.coordinate;
 
@@ -160,6 +161,30 @@ public class BoardManager : MonoBehaviour {
             return Direction.Right;
         } else {
             return Direction.Left;
+        }
+    }
+
+    public Space GetSpaceFromDirection(Space from, Direction direction) {
+        var coordinate = from.coordinate;
+        switch (direction) {
+            case Direction.Left:
+                if (coordinate.x - 1 < 0)
+                    return null;
+                return Board.Spaces[coordinate.x - 1, coordinate.y];
+            case Direction.Right:
+                if (coordinate.x + 1 > Grid.rows-1)
+                    return null;
+                return Board.Spaces[coordinate.x + 1, coordinate.y];
+            case Direction.Up:
+                if (coordinate.y + 1 > Grid.columns - 1)
+                    return null;
+                return Board.Spaces[coordinate.x, coordinate.y + 1];
+            case Direction.Down:
+                if (coordinate.y - 1 < 0)
+                    return null;
+                return Board.Spaces[coordinate.x, coordinate.y - 1];
+            default:
+                return null;
         }
     }
 }

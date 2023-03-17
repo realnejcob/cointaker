@@ -8,11 +8,13 @@ public class EnemyTelegraph : State
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.debugView.SetIndicatorText("Enemy telegraph");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Enemy telegraph", Color.red);
 
-        // Pick enemy card(s) to move
+        yield return new WaitForSeconds(0.25f);
 
-        yield return new WaitForSeconds(0.05f);
+        BattleSystem.enemyAI.ConfigureCardsToMove();
+
+        yield return new WaitForSeconds(0.25f);
 
         BattleSystem.SetState(new PlayerTurn(BattleSystem));
     }

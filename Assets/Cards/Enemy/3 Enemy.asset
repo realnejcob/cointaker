@@ -17,4 +17,4 @@ MonoBehaviour:
   description: 
   strength: 3
   cardAbility: 0
-  cardGraphic: {fileID: 0}
+  cardGraphic: {fileID: 21300000, guid: b3ba0c5724d912d4cb68397505423dbd, type: 3}

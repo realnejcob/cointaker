@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BattleSystem : StateMachine {
     public BoardManager boardManager;
+    public EnemyAI enemyAI;
 
     [ReadOnly] public Space originSpace;
     [ReadOnly] public Space targetSpace;

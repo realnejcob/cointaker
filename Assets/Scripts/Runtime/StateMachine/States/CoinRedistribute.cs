@@ -7,7 +7,7 @@ public class CoinRedistribute : State {
     }
 
     public override IEnumerator Start() {
-        BattleSystem.boardManager.debugView.SetIndicatorText("Coins redistribute");
+        BattleSystem.boardManager.debugView.SetIndicatorText("Coins redistribute", Color.green);
         BattleSystem.boardManager.debugView.SetCoinReserveText(BattleSystem.coinsReserve.ToString());
         yield break;
     }
@@ -23,7 +23,7 @@ public class CoinRedistribute : State {
 
         var topCard = targetSpace.GetTopCard();
 
-        if (topCard.alignment == AlignmentType.OPPONENT)
+        if (topCard.alignment == AlignmentType.ENEMY)
             yield break;
 
         topCard.AddCoins(1);
