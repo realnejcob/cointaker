@@ -8,10 +8,10 @@ public class Board : MonoBehaviour {
     [SerializeField] private Space spacePrefab;
 
     internal void Setup() {
-        Spaces = new Space[Grid.rows, Grid.columns];
+        Spaces = new Space[Grid.columns, Grid.rows];
 
-        for (int x = 0; x < Grid.rows; x++) {
-            for (int y = 0; y < Grid.columns; y++) {
+        for (int x = 0; x < Grid.columns; x++) {
+            for (int y = 0; y < Grid.rows; y++) {
                 var coordinate = new Vector2Int(x, y);
                 Spaces[x, y] = CreateNewSpace(coordinate);
             }
@@ -57,7 +57,7 @@ public class Board : MonoBehaviour {
         space = null;
 
         var coordinateToCheck = originSpace.coordinate + coordinateOffset;
-        if (coordinateToCheck.x < 0 || coordinateToCheck.y < 0 || coordinateToCheck.x > Grid.rows-1 || coordinateToCheck.y > Grid.columns - 1) {
+        if (coordinateToCheck.x < 0 || coordinateToCheck.y < 0 || coordinateToCheck.x > Grid.columns-1 || coordinateToCheck.y > Grid.rows - 1) {
             return false;
         }
 

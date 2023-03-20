@@ -65,12 +65,12 @@ public class EnemyCard : Card {
                 }
                 break;
             case Direction.Right:
-                for (int x = originSpace.coordinate.x; x < Grid.rows; x++) {
+                for (int x = originSpace.coordinate.x; x < Grid.columns; x++) {
                     addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
                 }
                 break;
             case Direction.Up:
-                for (int y = originSpace.coordinate.y; y < Grid.columns; y++) {
+                for (int y = originSpace.coordinate.y; y < Grid.rows; y++) {
                     addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
                 }
                 break;

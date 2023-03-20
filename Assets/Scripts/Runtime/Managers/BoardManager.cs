@@ -178,11 +178,11 @@ public class BoardManager : MonoBehaviour {
                     return null;
                 return Board.Spaces[coordinate.x - 1, coordinate.y];
             case Direction.Right:
-                if (coordinate.x + 1 > Grid.rows-1)
+                if (coordinate.x + 1 > Grid.columns-1)
                     return null;
                 return Board.Spaces[coordinate.x + 1, coordinate.y];
             case Direction.Up:
-                if (coordinate.y + 1 > Grid.columns - 1)
+                if (coordinate.y + 1 > Grid.rows - 1)
                     return null;
                 return Board.Spaces[coordinate.x, coordinate.y + 1];
             case Direction.Down:
