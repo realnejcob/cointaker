@@ -57,11 +57,13 @@ public class EnemyTurn : State {
         switch (actionType) {
             case ActionType.MOVE:
                 MoveSingleCard();
+                CheckToFlipDirection();
                 break;
             case ActionType.ATTACK:
                 Attack();
                 break;
             case ActionType.SHIFT:
+                CheckToFlipDirection();
                 Shift();
                 break;
             default:
@@ -98,6 +100,13 @@ public class EnemyTurn : State {
         } else {
             StealCoins(cardToMove, targetCard, 1);
         }
+    }
+    private void StealCoins(Card to, Card from, int amount) {
+        if (from.CoinsCount() == 0)
+            return;
+
+        from.RemoveCoins(amount);
+        to.AddCoins(amount);
     }
 
     private void Shift() {
@@ -171,11 +180,15 @@ public class EnemyTurn : State {
         return false;
     }
 
-    private void StealCoins(Card to, Card from, int amount) {
-        if (from.CoinsCount() == 0)
+    private void CheckToFlipDirection() {
+        var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
+
+        if (CanShift(out var spaces))
             return;
 
-        from.RemoveCoins(amount);
-        to.AddCoins(amount);
+        if (cardToMove.IsNextMovePossible())
+            return;
+
+        cardToMove.FlipDirection();
     }
 }

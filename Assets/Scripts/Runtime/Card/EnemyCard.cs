@@ -38,4 +38,18 @@ public class EnemyCard : Card {
                 break;
         }
     }
+
+    public bool IsNextMovePossible() {
+        var nextSpace = BoardManager.Instance.GetSpaceFromDirection(this.GetSpace(), moveDirection);
+        if (nextSpace == null)
+            return false;
+
+        if (!nextSpace.GetIsMoveable())
+            return false;
+
+        if (!nextSpace.IsFree && nextSpace.GetTopCard().alignment == AlignmentType.ENEMY)
+            return false;
+
+        return true;
+    }
 }
