@@ -21,8 +21,6 @@ public class EnemyCard : Card {
     }
 
     public void FlipDirection() {
-        print("direction flipped");
-
         switch (MoveDirection) {
             case Direction.Left:
                 MoveDirection = Direction.Right;
