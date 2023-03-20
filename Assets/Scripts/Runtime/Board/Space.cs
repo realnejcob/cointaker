@@ -14,6 +14,8 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
 
     public int CoinsOnSpace { get { return GetCoinsOnSpace(); } }
 
+    public List<Card> Cards { get { return cards; } private set { } }
+
     [SerializeField] private List<Card> cards;
     public GameObject isMoveableIndicator;
 

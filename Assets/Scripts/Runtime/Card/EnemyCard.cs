@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,5 +18,24 @@ public class EnemyCard : Card {
     private Direction SetDirection(Direction direction) {
         moveDirectionIndicator.SetDirection(direction);
         return direction;
+    }
+
+    public void FlipDirection() {
+        print("direction flipped");
+
+        switch (MoveDirection) {
+            case Direction.Left:
+                MoveDirection = Direction.Right;
+                break;
+            case Direction.Right:
+                MoveDirection = Direction.Left;
+                break;
+            case Direction.Up:
+                MoveDirection = Direction.Down;
+                break;
+            case Direction.Down:
+                MoveDirection = Direction.Up;
+                break;
+        }
     }
 }

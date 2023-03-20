@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class EnemyTurn : State {
     public EnemyTurn(BattleSystem battlesystem) : base(battlesystem) {
@@ -32,6 +33,9 @@ public class EnemyTurn : State {
         if (targetSpace == null)
             return ActionType.NONE;
 
+        if (!targetSpace.GetIsMoveable())
+            return ActionType.NONE;
+
         if (targetSpace.IsFree)
             return ActionType.MOVE;
 
@@ -52,22 +56,26 @@ public class EnemyTurn : State {
     public void PerformAction(ActionType actionType) {
         switch (actionType) {
             case ActionType.MOVE:
-                Move();
+                MoveSingleCard();
                 break;
             case ActionType.ATTACK:
                 Attack();
                 break;
             case ActionType.SHIFT:
+                Shift();
                 break;
             default:
                 break;
         }
     }
 
-    public void Move() {
+    public void MoveSingleCard() {
         var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
         var targetSpace = BoardManager.Instance.GetSpaceFromDirection(cardToMove.GetSpace(), cardToMove.MoveDirection);
+        Move(cardToMove, targetSpace);
+    }
 
+    private void Move(Card cardToMove, Space targetSpace) {
         cardToMove.GetSpace().RemoveFromSpace(cardToMove);
 
         cardToMove.transform.SetParent(targetSpace.transform);
@@ -86,10 +94,81 @@ public class EnemyTurn : State {
         
         if (isEliminated) {
             cardToMove.AddCoins(targetCoinsCount);
-            Move();
+            MoveSingleCard();
         } else {
             StealCoins(cardToMove, targetCard, 1);
         }
+    }
+
+    private void Shift() {
+        if (!CanShift(out var connectedSpaces))
+            return;
+
+        var spacesToShift = new List<Space>();
+        for (int i = 0; i < connectedSpaces.Count; i++) {
+            var space = connectedSpaces[i];
+            spacesToShift.Add(space);
+            if (connectedSpaces[i + 1].IsFree && connectedSpaces[i + 1].GetIsMoveable())
+                break;
+        }
+
+        var dir = BattleSystem.enemyAI.cardsToMove[0].MoveDirection;
+        spacesToShift.Reverse();
+
+        for (int i = 0; i < spacesToShift.Count; i++) {
+            var cardsToMove = new List<Card>();
+
+            foreach (var cardOnSpace in spacesToShift[i].Cards) {
+                cardsToMove.Add(cardOnSpace);
+            }
+
+            foreach (var card in cardsToMove) {
+                var targetSpace = BoardManager.Instance.GetSpaceFromDirection(spacesToShift[i], dir);
+                Move(card, targetSpace);
+            }
+        }
+    }
+
+    private bool CanShift(out List<Space> s) {
+        var originCard = BattleSystem.enemyAI.cardsToMove[0];
+        var originSpace = originCard.GetSpace();
+        var dir = originCard.MoveDirection;
+        var addedSpaces = new List<Space>();
+
+        switch (dir) {
+            case Direction.Left:
+                for (int x = originSpace.coordinate.x; x >= 0; x--) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
+                }
+                break;
+            case Direction.Right:
+                for (int x = originSpace.coordinate.x; x < Grid.rows; x++) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
+                }
+                break;
+            case Direction.Up:
+                for (int y = originSpace.coordinate.y; y < Grid.columns; y++) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
+                }
+                break;
+            case Direction.Down:
+                for (int y = originSpace.coordinate.y; y >= 0; y--) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
+                }
+                break;
+            default:
+                break;
+        }
+
+        s = addedSpaces;
+
+        for (int i = 0; i < addedSpaces.Count; i++) {
+            if (addedSpaces[i].IsFree && addedSpaces[i].GetIsMoveable()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void StealCoins(Card to, Card from, int amount) {
