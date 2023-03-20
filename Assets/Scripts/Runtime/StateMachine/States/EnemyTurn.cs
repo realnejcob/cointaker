@@ -57,13 +57,11 @@ public class EnemyTurn : State {
         switch (actionType) {
             case ActionType.MOVE:
                 MoveSingleCard();
-                CheckToFlipDirection();
                 break;
             case ActionType.ATTACK:
                 Attack();
                 break;
             case ActionType.SHIFT:
-                CheckToFlipDirection();
                 Shift();
                 break;
             default:
@@ -85,6 +83,9 @@ public class EnemyTurn : State {
 
         cardToMove.RefreshDesiredPosition();
         cardToMove.StartMoveZoomTween();
+
+        if (cardToMove.alignment == AlignmentType.ENEMY)
+            CheckToFlipDirection((EnemyCard)cardToMove);
     }
 
     private void Attack() {
@@ -180,9 +181,7 @@ public class EnemyTurn : State {
         return false;
     }
 
-    private void CheckToFlipDirection() {
-        var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
-
+    private void CheckToFlipDirection(EnemyCard cardToMove) {
         if (CanShift(out var spaces))
             return;
 
