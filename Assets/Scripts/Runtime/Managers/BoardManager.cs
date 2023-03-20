@@ -140,6 +140,12 @@ public class BoardManager : MonoBehaviour {
         cardInstanceSettings.space.AddToSpace(newCard);
     }
 
+    public void DrawCards() {
+
+    }
+
+    #region -- HELPER FUNCTIONS
+
     public List<Direction> GetDirectionsFromSpace(Space from) {
         var directions = new List<Direction>();
         var moveableSpaces = from.GetTopCard().MoveableSpaces;
@@ -187,4 +193,6 @@ public class BoardManager : MonoBehaviour {
                 return null;
         }
     }
+
+    #endregion
 }

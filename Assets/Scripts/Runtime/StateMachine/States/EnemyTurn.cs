@@ -18,6 +18,8 @@ public class EnemyTurn : State {
 
         BattleSystem.enemyAI.UnhighlightCardsToMove();
 
+        BoardManager.Instance.DrawCards();
+
         // Check if player is out of cards, then go to lose state
         // Else, continue game loop starting with telegraph
 

@@ -24,6 +24,8 @@ public class PlayerTurn : State {
         PerformAction(action);
         ClearSpaceReferences();
 
+        BoardManager.Instance.DrawCards();
+
         if (BattleSystem.coinsReserve > 0) {
             BattleSystem.SetState(new CoinRedistribute(BattleSystem));
             yield break;
