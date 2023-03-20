@@ -185,6 +185,24 @@ public abstract class Card : MonoBehaviour {
         Destroy(gameObject);
     }
 
+    public void Move(Space targetSpace) {
+        GetSpace().RemoveFromSpace(this);
+
+        transform.SetParent(targetSpace.transform);
+        targetSpace.AddToSpace(this);
+
+        RefreshDesiredPosition();
+        StartMoveZoomTween();
+    }
+
+    public void StealCoins(Card from, int amount) {
+        if (from.CoinsCount() == 0)
+            return;
+
+        from.RemoveCoins(amount);
+        AddCoins(amount);
+    }
+
     #region MOVE
     private void LerpToDesiredPosition() {
         var speed = 0.1f;

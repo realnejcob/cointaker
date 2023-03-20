@@ -18,5 +18,14 @@ public class ConsoleManager : MonoBehaviour {
                 DevConsole.CloseConsole();
                 GameManager.Instance.ReloadScene();
             }));
+
+        DevConsole.AddCommand(Command.Create(
+            name: "SkipCurrentState",
+            aliases: "skipstate",
+            helpText: "Skips currently active state",
+            callback: () => {
+                DevConsole.CloseConsole();
+                BoardManager.Instance.battleSystem.SkipState();
+            }));
     }
 }

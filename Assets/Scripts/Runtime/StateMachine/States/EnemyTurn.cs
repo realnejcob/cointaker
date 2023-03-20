@@ -76,14 +76,7 @@ public class EnemyTurn : State {
     }
 
     private void Move(Card cardToMove, Space targetSpace) {
-        cardToMove.GetSpace().RemoveFromSpace(cardToMove);
-
-        cardToMove.transform.SetParent(targetSpace.transform);
-        targetSpace.AddToSpace(cardToMove);
-
-        cardToMove.RefreshDesiredPosition();
-        cardToMove.StartMoveZoomTween();
-
+        cardToMove.Move(targetSpace);
         if (cardToMove.alignment == AlignmentType.ENEMY)
             CheckToFlipDirection((EnemyCard)cardToMove);
     }
@@ -99,15 +92,8 @@ public class EnemyTurn : State {
             cardToMove.AddCoins(targetCoinsCount);
             MoveSingleCard();
         } else {
-            StealCoins(cardToMove, targetCard, 1);
+            cardToMove.StealCoins(targetCard, 1);
         }
-    }
-    private void StealCoins(Card to, Card from, int amount) {
-        if (from.CoinsCount() == 0)
-            return;
-
-        from.RemoveCoins(amount);
-        to.AddCoins(amount);
     }
 
     private void Shift() {

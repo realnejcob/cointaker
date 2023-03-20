@@ -21,4 +21,8 @@ public abstract class State {
     public virtual IEnumerator MouseDown() {
         yield break;
     }
+
+    public virtual IEnumerator Skip() {
+        yield break;
+    }
 }

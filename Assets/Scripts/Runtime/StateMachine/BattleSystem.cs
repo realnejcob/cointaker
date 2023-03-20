@@ -23,4 +23,8 @@ public class BattleSystem : StateMachine {
             StartCoroutine(State.MouseUp());
         }
     }
+
+    public void SkipState() {
+        StartCoroutine(State.Skip());
+    }
 }

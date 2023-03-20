@@ -35,4 +35,9 @@ public class CoinRedistribute : State {
 
         yield break;
     }
+
+    public override IEnumerator Skip() {
+        BattleSystem.SetState(new EnemyTurn(BattleSystem));
+        yield break;
+    }
 }

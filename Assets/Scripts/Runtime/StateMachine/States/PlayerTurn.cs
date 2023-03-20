@@ -43,6 +43,11 @@ public class PlayerTurn : State {
         BattleSystem.originSpace.GetTopCard().DisplayOnTopOfAll();
     }
 
+    public override IEnumerator Skip() {
+        BattleSystem.SetState(new EnemyTurn(BattleSystem));
+        yield break;
+    }
+
     public bool CanBeNewOrigin(Space spaceToCheck) {
         if (spaceToCheck == null)
             return false;
@@ -93,16 +98,9 @@ public class PlayerTurn : State {
 
     private void Move() {
         var cardToMove = BattleSystem.originSpace.GetTopCard();
-        BattleSystem.originSpace.RemoveFromSpace(cardToMove);
-
-        cardToMove.transform.SetParent(BattleSystem.targetSpace.transform);
-        BattleSystem.targetSpace.AddToSpace(cardToMove);
-
-        cardToMove.RefreshDesiredPosition();
-        cardToMove.StartMoveZoomTween();
-
-        BattleSystem.targetSpace.GetTopCard().SetStackCounter(BattleSystem.targetSpace.CardsCount);
-        BattleSystem.targetSpace.GetTopCard().UpdateStackBuff();
+        cardToMove.Move(BattleSystem.targetSpace);
+        cardToMove.SetStackCounter(BattleSystem.targetSpace.CardsCount);
+        cardToMove.UpdateStackBuff();
     }
 
     private void Stack() {
@@ -114,7 +112,7 @@ public class PlayerTurn : State {
         var originTopCard = BattleSystem.originSpace.GetTopCard();
         var targetTopCard = BattleSystem.targetSpace.GetTopCard();
 
-        StealCoins(originTopCard, targetTopCard, targetTopCard.CoinsCount());
+        originTopCard.StealCoins(targetTopCard, targetTopCard.CoinsCount());
         targetTopCard.EliminateCard();
     }
 
@@ -135,15 +133,7 @@ public class PlayerTurn : State {
 
         originTopCard.TakeHitPoint(out var isEliminated);
 
-        StealCoins(originTopCard, targetTopCard, 1);
-    }
-
-    private void StealCoins(Card to, Card from, int amount) {
-        if (from.CoinsCount() == 0)
-            return;
-
-        from.RemoveCoins(amount);
-        to.AddCoins(amount);
+        originTopCard.StealCoins(targetTopCard, 1);
     }
 
     private void SplitCoins() {
@@ -155,7 +145,7 @@ public class PlayerTurn : State {
 
         var totalCoins = topCard.CoinsCount();
         var coinsToMove = Mathf.FloorToInt(totalCoins / 2f);
-        StealCoins(nextTopCard, topCard, coinsToMove);
+        nextTopCard.StealCoins(topCard, coinsToMove);
     }
 
     private void RestoreAll() {
