@@ -20,6 +20,8 @@ public class EnemyTurn : State {
 
         BoardManager.Instance.DrawCards();
 
+        CheckAllCardsToFlipDirection();
+
         // Check if player is out of cards, then go to lose state
         // Else, continue game loop starting with telegraph
 
@@ -79,8 +81,6 @@ public class EnemyTurn : State {
 
     private void Move(Card cardToMove, Space targetSpace) {
         cardToMove.Move(targetSpace);
-        if (cardToMove.alignment == AlignmentType.ENEMY)
-            CheckToFlipDirection((EnemyCard)cardToMove);
     }
 
     private void Attack() {
@@ -99,7 +99,7 @@ public class EnemyTurn : State {
     }
 
     private void Shift() {
-        if (!CanShift(out var connectedSpaces))
+        if (!BattleSystem.enemyAI.cardsToMove[0].HasEmptySpaceInMoveDirection(out var connectedSpaces))
             return;
 
         var spacesToShift = new List<Space>();
@@ -127,53 +127,24 @@ public class EnemyTurn : State {
         }
     }
 
-    private bool CanShift(out List<Space> s) {
-        var originCard = BattleSystem.enemyAI.cardsToMove[0];
-        var originSpace = originCard.GetSpace();
-        var dir = originCard.MoveDirection;
-        var addedSpaces = new List<Space>();
+    private void CheckAllCardsToFlipDirection() {
+        var enemyCards = BoardManager.Instance.EnemyCards;
 
-        switch (dir) {
-            case Direction.Left:
-                for (int x = originSpace.coordinate.x; x >= 0; x--) {
-                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
-                }
-                break;
-            case Direction.Right:
-                for (int x = originSpace.coordinate.x; x < Grid.rows; x++) {
-                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
-                }
-                break;
-            case Direction.Up:
-                for (int y = originSpace.coordinate.y; y < Grid.columns; y++) {
-                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
-                }
-                break;
-            case Direction.Down:
-                for (int y = originSpace.coordinate.y; y >= 0; y--) {
-                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
-                }
-                break;
-            default:
-                break;
+        foreach (var card in enemyCards) {
+            CheckToFlipDirection(card);
         }
-
-        s = addedSpaces;
-
-        for (int i = 0; i < addedSpaces.Count; i++) {
-            if (addedSpaces[i].IsFree && addedSpaces[i].GetIsMoveable()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void CheckToFlipDirection(EnemyCard cardToMove) {
-        if (CanShift(out var spaces))
+        var moveDirection = cardToMove.MoveDirection;
+
+        if (cardToMove.HasEmptySpaceInMoveDirection(out var spaces))
             return;
 
-        if (cardToMove.IsNextMovePossible())
+        if (cardToMove.IsNextMovePossible(moveDirection))
+            return;
+
+        if (!cardToMove.IsNextMovePossible(cardToMove.GetFlippedDirection(moveDirection)))
             return;
 
         cardToMove.FlipDirection();

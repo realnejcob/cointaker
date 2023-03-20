@@ -21,24 +21,26 @@ public class EnemyCard : Card {
     }
 
     public void FlipDirection() {
-        switch (MoveDirection) {
-            case Direction.Left:
-                MoveDirection = Direction.Right;
-                break;
-            case Direction.Right:
-                MoveDirection = Direction.Left;
-                break;
-            case Direction.Up:
-                MoveDirection = Direction.Down;
-                break;
-            case Direction.Down:
-                MoveDirection = Direction.Up;
-                break;
-        }
+        MoveDirection = GetFlippedDirection(MoveDirection);
     }
 
-    public bool IsNextMovePossible() {
-        var nextSpace = BoardManager.Instance.GetSpaceFromDirection(this.GetSpace(), moveDirection);
+    public Direction GetFlippedDirection(Direction direction) {
+        switch (direction) {
+            case Direction.Left:
+                return Direction.Right;
+            case Direction.Right:
+                return Direction.Left;
+            case Direction.Up:
+                return Direction.Down;
+            case Direction.Down:
+                return Direction.Up;
+        }
+
+        return Direction.Right;
+    }
+
+    public bool IsNextMovePossible(Direction direction) {
+        var nextSpace = BoardManager.Instance.GetSpaceFromDirection(GetSpace(), direction);
         if (nextSpace == null)
             return false;
 
@@ -49,5 +51,46 @@ public class EnemyCard : Card {
             return false;
 
         return true;
+    }
+
+    public bool HasEmptySpaceInMoveDirection(out List<Space> spacesInDirection) {
+        var originSpace = GetSpace();
+        var dir = MoveDirection;
+        var addedSpaces = new List<Space>();
+
+        switch (dir) {
+            case Direction.Left:
+                for (int x = originSpace.coordinate.x; x >= 0; x--) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
+                }
+                break;
+            case Direction.Right:
+                for (int x = originSpace.coordinate.x; x < Grid.rows; x++) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
+                }
+                break;
+            case Direction.Up:
+                for (int y = originSpace.coordinate.y; y < Grid.columns; y++) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
+                }
+                break;
+            case Direction.Down:
+                for (int y = originSpace.coordinate.y; y >= 0; y--) {
+                    addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
+                }
+                break;
+            default:
+                break;
+        }
+
+        spacesInDirection = addedSpaces;
+
+        for (int i = 0; i < addedSpaces.Count; i++) {
+            if (addedSpaces[i].IsFree && addedSpaces[i].GetIsMoveable()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
