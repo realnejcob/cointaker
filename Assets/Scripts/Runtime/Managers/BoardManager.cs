@@ -18,6 +18,8 @@ public class BoardManager : MonoBehaviour {
     public List<CardEntity> playerDeck;
     public List<CardEntity> enemyDeck;
 
+    public List<CardEntity> PlayerHand { get; set; } = new List<CardEntity>();
+    public List<CardEntity> EnemyHand { get; set; } = new List<CardEntity>();
     public List<PlayerCard> PlayerCards { get; set; } = new List<PlayerCard>();
     public List<EnemyCard> EnemyCards { get; set; } = new List<EnemyCard>();
 
@@ -51,9 +53,13 @@ public class BoardManager : MonoBehaviour {
     private void SetupCards() {
         InstantiateCards();
 
-        playerDeck.Shuffle();
-        enemyDeck.Shuffle();
+        PlayerHand.AddRange(playerDeck);
+        PlayerHand.Shuffle();
 
+        EnemyHand.AddRange(enemyDeck);
+        EnemyHand.Shuffle();
+
+        EnemyHand.Shuffle();
 
         InitializeCards();
     }
@@ -79,15 +85,40 @@ public class BoardManager : MonoBehaviour {
 
         for (int i = 0; i < PlayerCards.Count; i++) {
             var card = PlayerCards[i];
-            card.Initialize(playerDeck[i]);
-            card.name = $"PlayerCard [{card.displayName}]";
+            card.Initialize(GetNextCardInHand(PlayerHand));
         }
 
         for (int i = 0; i < EnemyCards.Count; i++) {
             var card = EnemyCards[i];
             card.SetCoins(coinDistribution[i]);
-            card.Initialize(enemyDeck[i]);
-            card.name = $"EnemyCard [{card.displayName}]";
+            card.Initialize(GetNextCardInHand(EnemyHand));
+        }
+    }
+
+    private CardEntity GetNextCardInHand(List<CardEntity> hand) {
+        if (hand.Count == 0) return null;
+        var entity = hand[0];
+        hand.Remove(entity);
+        return entity;
+    }
+
+    private void DrawNewPlayerCard(Vector2Int coordinate) {
+        if (PlayerHand.Count == 0) return;
+
+        var newCard = InstantiatePlayerCard(coordinate);
+        newCard.Initialize(GetNextCardInHand(PlayerHand));
+    }
+
+    public void DrawCards() {
+        var coordinates = new List<Vector2Int>();
+        coordinates.Add(new Vector2Int(1, 1));
+        coordinates.Add(new Vector2Int(2, 1));
+        coordinates.Add(new Vector2Int(1, 2));
+        coordinates.Add(new Vector2Int(2, 2));
+
+        foreach (var coordinate in coordinates) {
+            if (Board.Spaces[coordinate.x, coordinate.y].IsFree)
+                DrawNewPlayerCard(coordinate);
         }
     }
 
@@ -105,6 +136,14 @@ public class BoardManager : MonoBehaviour {
         return newDistribution;
     }
 
+    public int GetTotalPlayerCoins() {
+        var totalPlayerCoins = 0;
+        foreach (var card in BoardManager.Instance.PlayerCards) {
+            totalPlayerCoins += card.CoinsCount();
+        }
+        return totalPlayerCoins;
+    }
+
     public class CardInstanceSettings {
         public Card prefab;
         public Space space;
@@ -115,7 +154,7 @@ public class BoardManager : MonoBehaviour {
         return card;
     }
 
-    private void InstantiatePlayerCard(Vector2Int coordinate) {
+    private PlayerCard InstantiatePlayerCard(Vector2Int coordinate) {
         var cardInstanceSettings = new CardInstanceSettings() {
             prefab = playerCardPrefab,
             space = Board.Spaces[coordinate.x, coordinate.y]
@@ -125,9 +164,11 @@ public class BoardManager : MonoBehaviour {
         newCard.alignment = AlignmentType.PLAYER;
         PlayerCards.Add(newCard);
         cardInstanceSettings.space.AddToSpace(newCard);
+
+        return newCard;
     }
 
-    private void InstantiateOpponentCard(Vector2Int coordinate, Direction initMoveDirection) {
+    private EnemyCard InstantiateOpponentCard(Vector2Int coordinate, Direction initMoveDirection) {
         var cardInstanceSettings = new CardInstanceSettings() {
             prefab = enemyCardPrefab,
             space = Board.Spaces[coordinate.x, coordinate.y]
@@ -138,10 +179,8 @@ public class BoardManager : MonoBehaviour {
         newCard.MoveDirection = initMoveDirection;
         EnemyCards.Add(newCard);
         cardInstanceSettings.space.AddToSpace(newCard);
-    }
 
-    public void DrawCards() {
-
+        return newCard;
     }
 
     #region -- HELPER FUNCTIONS

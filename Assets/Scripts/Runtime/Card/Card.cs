@@ -60,6 +60,8 @@ public abstract class Card : MonoBehaviour {
         initPosition = transform.position;
         desiredPosition = initPosition;
         InitStrength = strength;
+
+        name = $"{alignment}_{displayName}";
     }
     private void InitializeStats(CardEntity cardEntity) {
         displayName = cardEntity.displayName;

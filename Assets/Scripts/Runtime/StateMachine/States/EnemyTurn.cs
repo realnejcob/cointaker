@@ -18,6 +18,8 @@ public class EnemyTurn : State {
 
         BattleSystem.enemyAI.UnhighlightCardsToMove();
 
+        yield return new WaitForSeconds(0.25f);
+
         BoardManager.Instance.DrawCards();
 
         CheckAllCardsToFlipDirection();

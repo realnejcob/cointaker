@@ -24,7 +24,18 @@ public class PlayerTurn : State {
         PerformAction(action);
         ClearSpaceReferences();
 
+        yield return new WaitForSeconds(0.25f);
+
         BoardManager.Instance.DrawCards();
+
+        if (BoardManager.Instance.GetTotalPlayerCoins() == 12) {
+            BattleSystem.SetState(new Win(BattleSystem));
+        }
+
+        if (BoardManager.Instance.EnemyCards.Count == 0) {
+            BattleSystem.SetState(new Win(BattleSystem));
+            yield break;
+        }
 
         if (BattleSystem.coinsReserve > 0) {
             BattleSystem.SetState(new CoinRedistribute(BattleSystem));

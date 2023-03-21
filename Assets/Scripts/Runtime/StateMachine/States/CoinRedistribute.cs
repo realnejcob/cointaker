@@ -30,10 +30,15 @@ public class CoinRedistribute : State {
         BattleSystem.coinsReserve -= 1;
         BattleSystem.boardManager.debugView.SetCoinReserveText(BattleSystem.coinsReserve.ToString());
 
-        if (BattleSystem.coinsReserve == 0)
-            BattleSystem.SetState(new EnemyTurn(BattleSystem));
+        if (BoardManager.Instance.GetTotalPlayerCoins() == 12) {
+            BattleSystem.SetState(new Win(BattleSystem));
+            yield break;
+        }
 
-        yield break;
+        if (BattleSystem.coinsReserve == 0) { 
+            BattleSystem.SetState(new EnemyTurn(BattleSystem));
+            yield break;
+        }
     }
 
     public override IEnumerator Skip() {
