@@ -30,10 +30,6 @@ public class PlayerTurn : State {
 
         if (BoardManager.Instance.GetTotalPlayerCoins() == 12) {
             BattleSystem.SetState(new Win(BattleSystem));
-        }
-
-        if (BoardManager.Instance.EnemyCards.Count == 0) {
-            BattleSystem.SetState(new Win(BattleSystem));
             yield break;
         }
 

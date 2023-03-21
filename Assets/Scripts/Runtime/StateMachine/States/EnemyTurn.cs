@@ -117,7 +117,6 @@ public class EnemyTurn : State {
 
         for (int i = 0; i < spacesToShift.Count; i++) {
             var cardsToMove = new List<Card>();
-
             foreach (var cardOnSpace in spacesToShift[i].Cards) {
                 cardsToMove.Add(cardOnSpace);
             }

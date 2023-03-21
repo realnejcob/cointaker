@@ -170,12 +170,25 @@ public abstract class Card : MonoBehaviour {
             return;
         }
 
+        if (alignment == AlignmentType.PLAYER) {
+            var pCard = (PlayerCard)this;
+            pCard.MakeHit();
+        }    
+
         hasEliminated = false;
     }
 
     public void Restore() {
+        if (hitPoints == 0)
+            return;
+
         hitPoints = 0;
         healthIndicator.UpdateIndicator(hitPoints);
+
+        if (alignment == AlignmentType.PLAYER) {
+            var pCard = (PlayerCard)this;
+            pCard.MakeHeal();
+        }
     }
 
     public void EliminateCard() {
