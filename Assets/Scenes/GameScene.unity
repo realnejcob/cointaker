@@ -636,12 +636,12 @@ MonoBehaviour:
   enemyDeck:
   - {fileID: 11400000, guid: b1839a23edc93684fb1ad61d8dbfcae1, type: 2}
   - {fileID: 11400000, guid: b1839a23edc93684fb1ad61d8dbfcae1, type: 2}
-  - {fileID: 11400000, guid: b1839a23edc93684fb1ad61d8dbfcae1, type: 2}
-  - {fileID: 11400000, guid: b1839a23edc93684fb1ad61d8dbfcae1, type: 2}
   - {fileID: 11400000, guid: 83202d0b808d5c44bbedfe000bd7b05a, type: 2}
   - {fileID: 11400000, guid: 83202d0b808d5c44bbedfe000bd7b05a, type: 2}
   - {fileID: 11400000, guid: 83202d0b808d5c44bbedfe000bd7b05a, type: 2}
   - {fileID: 11400000, guid: 473dadf17cc791f4f9b780fa2525411f, type: 2}
+  - {fileID: 11400000, guid: 473dadf17cc791f4f9b780fa2525411f, type: 2}
+  - {fileID: 11400000, guid: 013c5cd14034c434aa0799719f330478, type: 2}
   debugView: {fileID: 194306555}
 --- !u!1 &631621966
 GameObject:
