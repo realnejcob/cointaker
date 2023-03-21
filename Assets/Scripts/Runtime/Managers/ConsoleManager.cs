@@ -11,7 +11,7 @@ public class ConsoleManager : MonoBehaviour {
         DevConsole.SetToggleKey(KeyCode.Escape);
 
         DevConsole.AddCommand(Command.Create(
-            name: "ReloadActiveScene",
+            name: "Reload_Active_Scene",
             aliases: "r",
             helpText: "Reloads active scene",
             callback: () => {
@@ -20,8 +20,8 @@ public class ConsoleManager : MonoBehaviour {
             }));
 
         DevConsole.AddCommand(Command.Create(
-            name: "SkipCurrentState",
-            aliases: "skipstate",
+            name: "Skip_Current_State",
+            aliases: "ss",
             helpText: "Skips currently active state",
             callback: () => {
                 DevConsole.CloseConsole();
