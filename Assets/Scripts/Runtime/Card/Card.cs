@@ -172,7 +172,7 @@ public abstract class Card : MonoBehaviour {
 
         if (alignment == AlignmentType.PLAYER) {
             var pCard = (PlayerCard)this;
-            pCard.MakeHit();
+            pCard.FeedbackFlash(FeedbackIndicatorType.HIT);
         }    
 
         hasEliminated = false;
@@ -187,7 +187,7 @@ public abstract class Card : MonoBehaviour {
 
         if (alignment == AlignmentType.PLAYER) {
             var pCard = (PlayerCard)this;
-            pCard.MakeHeal();
+            pCard.FeedbackFlash(FeedbackIndicatorType.HEAL);
         }
     }
 

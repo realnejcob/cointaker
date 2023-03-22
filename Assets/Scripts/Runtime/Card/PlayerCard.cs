@@ -6,21 +6,39 @@ using UnityEngine.UI;
 public class PlayerCard : Card {
     [Space(25)]
     [Header("---")]
-    [SerializeField] private CanvasGroup hitIndicator;
-    [SerializeField] private CanvasGroup healIndicator;
-    private float fadeSpeed = 2;
+    [SerializeField] private CanvasGroup feedbackIndicator;
+    private Image feedbackIndicatorImage;
+    private float fadeSpeed = 1;
 
-    public void MakeHit() {
-        hitIndicator.alpha = 1;
+    public void FeedbackFlash(FeedbackIndicatorType type) {
+        if (feedbackIndicatorImage == null)
+            feedbackIndicatorImage = feedbackIndicator.GetComponent<Image>();
+
+        var color = GetIndicatorColor(type);
+        feedbackIndicatorImage.color = color;
+
+        feedbackIndicator.alpha = 1;
         LeanTween.value(1, 0, fadeSpeed).setOnUpdate((float t) => {
-            hitIndicator.alpha = t;
+            feedbackIndicator.alpha = t;
         }).setEaseOutCirc();
     }
 
-    public void MakeHeal() {
-        healIndicator.alpha = 1;
-        LeanTween.value(1, 0, fadeSpeed).setOnUpdate((float t) => {
-            healIndicator.alpha = t;
-        }).setEaseOutCirc();
+    private Color32 GetIndicatorColor(FeedbackIndicatorType type) {
+        switch (type) {
+            case FeedbackIndicatorType.HIT:
+                return new Color32(243, 75, 70, 255);
+            case FeedbackIndicatorType.HEAL:
+                return new Color32(208, 253, 118, 255);
+            case FeedbackIndicatorType.SPAWN:
+                return Color.white;
+            default:
+                return Color.white;
+        }
     }
+}
+
+public enum FeedbackIndicatorType {
+    HIT,
+    HEAL,
+    SPAWN
 }
