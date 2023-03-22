@@ -29,7 +29,7 @@ public class PlayerCard : Card {
                 return new Color32(243, 75, 70, 255);
             case FeedbackIndicatorType.HEAL:
                 return new Color32(208, 253, 118, 255);
-            case FeedbackIndicatorType.SPAWN:
+            case FeedbackIndicatorType.DRAW:
                 return Color.white;
             default:
                 return Color.white;
@@ -40,5 +40,5 @@ public class PlayerCard : Card {
 public enum FeedbackIndicatorType {
     HIT,
     HEAL,
-    SPAWN
+    DRAW
 }

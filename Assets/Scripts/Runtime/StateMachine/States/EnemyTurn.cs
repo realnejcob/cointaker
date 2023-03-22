@@ -89,15 +89,22 @@ public class EnemyTurn : State {
         var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
         var targetCard = BoardManager.Instance.GetSpaceFromDirection(cardToMove.GetSpace(), cardToMove.MoveDirection).GetTopCard();
 
-        var targetCoinsCount = targetCard.CoinsCount();
+        var cardsLeftOnTargetSpace = targetCard.GetSpace().CardsCount-1;
+        var targetCardCoinsCount = targetCard.CoinsCount();
         targetCard.TakeHitPoint(out var isEliminated);
-        
-        if (isEliminated) {
-            cardToMove.AddCoins(targetCoinsCount);
+
+        if (isEliminated && cardsLeftOnTargetSpace <= 0) {
+            cardToMove.AddCoins(targetCardCoinsCount);
             MoveSingleCard();
-        } else {
-            cardToMove.StealCoins(targetCard, 1);
+            return;
         }
+
+        if (isEliminated && cardsLeftOnTargetSpace > 0) {
+            cardToMove.AddCoins(targetCardCoinsCount);
+            return;
+        }
+
+        cardToMove.StealCoins(targetCard, 1);
     }
 
     private void Shift() {

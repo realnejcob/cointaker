@@ -107,6 +107,7 @@ public class BoardManager : MonoBehaviour {
 
         var newCard = InstantiatePlayerCard(coordinate);
         newCard.Initialize(GetNextCardInHand(PlayerHand));
+        newCard.FeedbackFlash(FeedbackIndicatorType.DRAW);
     }
 
     public void DrawCards() {
