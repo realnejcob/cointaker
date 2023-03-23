@@ -7,6 +7,7 @@ public class BoardManager : MonoBehaviour {
     public static BoardManager Instance;
     public Board Board { get; private set; }
     [SerializeField] private Board boardPrefab;
+    [SerializeField] private BoardLayout currentBoardLayout;
 
     [SerializeField] private PlayerCard playerCardPrefab;
     [SerializeField] private EnemyCard enemyCardPrefab;
@@ -27,7 +28,6 @@ public class BoardManager : MonoBehaviour {
 
     [Header("Debug:")]
     public DebugView debugView;
-
 
     private void Awake() {
         if (Instance != null) {

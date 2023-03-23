@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New CardEntity", menuName = "Custom/Create/New CardEntity")]
+[CreateAssetMenu(fileName = "New CardEntity", menuName = "Custom/Create/New Card Entity")]
 public class CardEntity : ScriptableObject {
     [ReadOnly] public string id;
 
