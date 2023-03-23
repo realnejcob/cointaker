@@ -143,6 +143,12 @@ public class PlayerTurn : State {
         originTopCard.TakeHitPoint(out var isEliminated);
 
         originTopCard.StealCoins(targetTopCard, 1);
+
+        var enemyAI = BoardManager.Instance.battleSystem.enemyAI;
+        if (!enemyAI.GetCardWillMove((EnemyCard)targetTopCard))
+            return;
+
+        enemyAI.ResetCardsToMove();
     }
 
     private void SplitCoins() {

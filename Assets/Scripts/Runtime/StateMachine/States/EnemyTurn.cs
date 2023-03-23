@@ -16,7 +16,7 @@ public class EnemyTurn : State {
 
         yield return new WaitForSeconds(0.5f);
 
-        BattleSystem.enemyAI.UnhighlightCardsToMove();
+        BattleSystem.enemyAI.ResetCardsToMove();
 
         yield return new WaitForSeconds(0.25f);
 
@@ -31,11 +31,12 @@ public class EnemyTurn : State {
     }
 
     private ActionType GetAction() {
-        var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
-        if (cardToMove == null)
+        if (!BattleSystem.enemyAI.HasCardsToMove())
             return ActionType.NONE;
 
+        var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
         var targetSpace = BoardManager.Instance.GetSpaceFromDirection(cardToMove.GetSpace(), cardToMove.MoveDirection);
+
         if (targetSpace == null)
             return ActionType.NONE;
 

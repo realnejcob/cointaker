@@ -9,6 +9,7 @@ public class Win : State {
     public override IEnumerator Start() {
         BoardManager.Instance.debugView.SetIndicatorText("Win", Color.green);
         BoardManager.Instance.debugView.EnableRestartGroup(true);
+        BattleSystem.enemyAI.ResetCardsToMove();
         yield break;
     }
 }

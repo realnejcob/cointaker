@@ -18,7 +18,12 @@ public class EnemyAI : MonoBehaviour {
         }
     }
 
-    public void UnhighlightCardsToMove() {
+    public void ResetCardsToMove() {
+        UnhighlightCardsToMove();
+        cardsToMove.Clear();
+    }
+
+    private void UnhighlightCardsToMove() {
         foreach (var card in cardsToMove) {
             if (!BoardManager.Instance.EnemyCards.Contains(card))
                 continue;
@@ -27,9 +32,18 @@ public class EnemyAI : MonoBehaviour {
         }
     }
 
-    private void ResetCardsToMove() {
-        UnhighlightCardsToMove();
-        cardsToMove.Clear();
+    public bool HasCardsToMove() {
+        if (cardsToMove.Count == 0)
+            return false;
+
+        return true;
+    }
+
+    public bool GetCardWillMove(EnemyCard card) {
+        if (cardsToMove.Contains(card))
+            return true;
+
+        return false;
     }
 
     private List<EnemyCard> GetNewCardsToMove() {

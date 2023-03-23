@@ -35,6 +35,10 @@ public class PlayerCard : Card {
                 return Color.white;
         }
     }
+
+    public override void CardSpecificEliminate() {
+        BoardManager.Instance.PlayerCards.Remove(this);
+    }
 }
 
 public enum FeedbackIndicatorType {

@@ -193,16 +193,12 @@ public abstract class Card : MonoBehaviour {
 
     public void EliminateCard() {
         GetSpace().RemoveFromSpace(this);
-
-        if (alignment == AlignmentType.PLAYER)
-            BoardManager.Instance.PlayerCards.Remove((PlayerCard)this);
-        if (alignment == AlignmentType.ENEMY)
-            BoardManager.Instance.EnemyCards.Remove((EnemyCard)this);
-
+        CardSpecificEliminate();
         LeanTween.cancel(gameObject);
-
         Destroy(gameObject);
     }
+
+    public virtual void CardSpecificEliminate() { }
 
     public void Move(Space targetSpace) {
         GetSpace().RemoveFromSpace(this);

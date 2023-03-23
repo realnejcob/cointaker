@@ -93,4 +93,13 @@ public class EnemyCard : Card {
 
         return false;
     }
+
+    public override void CardSpecificEliminate() {
+        BoardManager.Instance.EnemyCards.Remove(this);
+
+        var enemyAI = BoardManager.Instance.battleSystem.enemyAI;
+        if (enemyAI.GetCardWillMove(this)) {
+            enemyAI.ResetCardsToMove();
+        }
+    }
 }
