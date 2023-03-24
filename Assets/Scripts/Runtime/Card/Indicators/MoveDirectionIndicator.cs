@@ -7,16 +7,16 @@ public class MoveDirectionIndicator : MonoBehaviour {
 
     public void SetDirection(Direction direction) {
         switch (direction) {
-            case Direction.Left:
+            case Direction.LEFT:
                 arrow.rotation = Quaternion.Euler(Vector3.forward * -270);
                 break;
-            case Direction.Right:
+            case Direction.RIGHT:
                 arrow.rotation = Quaternion.Euler(Vector3.forward * -90);
                 break;
-            case Direction.Up:
+            case Direction.UP:
                 arrow.rotation = Quaternion.Euler(Vector3.zero);
                 break;
-            case Direction.Down:
+            case Direction.DOWN:
                 arrow.rotation = Quaternion.Euler(Vector3.forward * -180);
                 break;
         }

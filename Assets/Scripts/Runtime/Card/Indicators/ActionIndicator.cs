@@ -15,16 +15,16 @@ public class ActionIndicator : MonoBehaviour {
     public void Show(Direction[] directions) {
         foreach (var d in directions) {
             switch (d) {
-                case Direction.Left:
+                case Direction.LEFT:
                     pointerLeftRectTransform.gameObject.SetActive(true);
                     break;
-                case Direction.Right:
+                case Direction.RIGHT:
                     pointerRightRectTransform.gameObject.SetActive(true);
                     break;
-                case Direction.Up:
+                case Direction.UP:
                     pointerUpRectTransform.gameObject.SetActive(true);
                     break;
-                case Direction.Down:
+                case Direction.DOWN:
                     pointerDownRectTransform.gameObject.SetActive(true);
                     break;
             }
@@ -38,5 +38,3 @@ public class ActionIndicator : MonoBehaviour {
         pointerDownRectTransform.gameObject.SetActive(false);
     }
 }
-
-public enum Direction { Left, Right, Up, Down }

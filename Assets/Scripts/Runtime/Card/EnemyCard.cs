@@ -26,17 +26,17 @@ public class EnemyCard : Card {
 
     public Direction GetFlippedDirection(Direction direction) {
         switch (direction) {
-            case Direction.Left:
-                return Direction.Right;
-            case Direction.Right:
-                return Direction.Left;
-            case Direction.Up:
-                return Direction.Down;
-            case Direction.Down:
-                return Direction.Up;
+            case Direction.LEFT:
+                return Direction.RIGHT;
+            case Direction.RIGHT:
+                return Direction.LEFT;
+            case Direction.UP:
+                return Direction.DOWN;
+            case Direction.DOWN:
+                return Direction.UP;
         }
 
-        return Direction.Right;
+        return Direction.RIGHT;
     }
 
     public bool IsNextMovePossible(Direction direction) {
@@ -59,22 +59,22 @@ public class EnemyCard : Card {
         var addedSpaces = new List<Space>();
 
         switch (dir) {
-            case Direction.Left:
+            case Direction.LEFT:
                 for (int x = originSpace.coordinate.x; x >= 0; x--) {
                     addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
                 }
                 break;
-            case Direction.Right:
+            case Direction.RIGHT:
                 for (int x = originSpace.coordinate.x; x < Grid.columns; x++) {
                     addedSpaces.Add(BoardManager.Instance.Board.Spaces[x, originSpace.coordinate.y]);
                 }
                 break;
-            case Direction.Up:
+            case Direction.UP:
                 for (int y = originSpace.coordinate.y; y < Grid.rows; y++) {
                     addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
                 }
                 break;
-            case Direction.Down:
+            case Direction.DOWN:
                 for (int y = originSpace.coordinate.y; y >= 0; y--) {
                     addedSpaces.Add(BoardManager.Instance.Board.Spaces[originSpace.coordinate.x, y]);
                 }

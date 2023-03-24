@@ -40,9 +40,3 @@ public class PlayerCard : Card {
         BoardManager.Instance.PlayerCards.Remove(this);
     }
 }
-
-public enum FeedbackIndicatorType {
-    HIT,
-    HEAL,
-    DRAW
-}

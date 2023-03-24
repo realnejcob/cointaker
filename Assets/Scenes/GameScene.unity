@@ -624,7 +624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardPrefab: {fileID: 8214668635992394860, guid: 4fd1205662fd15a47b9816b098018b97, type: 3}
-  currentBoardLayout: {fileID: 11400000, guid: 0d7a98bb657b76f449ef3657d4f596dc, type: 2}
+  currentBoardLayout: {fileID: 11400000, guid: 948f7c061aee6c94a99bbad4573b3e61, type: 2}
   playerCardPrefab: {fileID: 733129442, guid: 8b6d3b68d4734b247bb308035744ceaf, type: 3}
   enemyCardPrefab: {fileID: 1390890012, guid: 83aa67163c0f9b14e95db692a7bdc1f7, type: 3}
   playerDeck:

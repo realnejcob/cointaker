@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CardAbility {
-    public static string GetDescription(Type ability) {
+    public static string GetDescription(AbilityType ability) {
         switch (ability) {
-            case Type.None:
+            case AbilityType.None:
                 break;
             default:
                 break;
@@ -14,7 +14,7 @@ public class CardAbility {
         return "";
     }
 
-    public enum Type {
+    public enum AbilityType {
         None = 0
     }
 }

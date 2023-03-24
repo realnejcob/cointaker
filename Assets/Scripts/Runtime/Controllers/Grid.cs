@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Grid {
     public static Vector2 cellSpacing = new Vector2(2.75f, 3.75f);
-    public static int columns = 4;
-    public static int rows = 4;
+    public static int columns = 1;
+    public static int rows = 1;
 
     public static Vector2 GetWorldPosition(Vector2 coordinate) {
         if (coordinate.x > columns-1 || coordinate.y > rows - 1) {

@@ -45,7 +45,7 @@ public class BoardManager : MonoBehaviour {
 
     public void CreateBoard() {
         Board = Instantiate(boardPrefab);
-        Board.Setup();
+        Board.Setup(currentBoardLayout);
 
         SetupCards();
     }
@@ -65,19 +65,18 @@ public class BoardManager : MonoBehaviour {
     }
 
     private void InstantiateCards() {
-        InstantiatePlayerCard(new Vector2Int(1, 1));
-        InstantiatePlayerCard(new Vector2Int(2, 1));
-        InstantiatePlayerCard(new Vector2Int(1, 2));
-        InstantiatePlayerCard(new Vector2Int(2, 2));
+        foreach (var space in Board.Spaces) {
+            var spaceType = Board.GetSpaceTypeFromSpace(space);
 
-        InstantiateOpponentCard(new Vector2Int(1, 0), Direction.Up);
-        InstantiateOpponentCard(new Vector2Int(2, 0), Direction.Up);
-        InstantiateOpponentCard(new Vector2Int(0, 1), Direction.Right);
-        InstantiateOpponentCard(new Vector2Int(3, 1), Direction.Left);
-        InstantiateOpponentCard(new Vector2Int(0, 2), Direction.Right);
-        InstantiateOpponentCard(new Vector2Int(3, 2), Direction.Left);
-        InstantiateOpponentCard(new Vector2Int(1, 3), Direction.Down);
-        InstantiateOpponentCard(new Vector2Int(2, 3), Direction.Down);
+            if (spaceType == SpaceType.PLAYER || spaceType == SpaceType.PLAYER_SPAWN) {
+                InstantiatePlayerCard(space.coordinate);
+                continue;
+            }
+
+            if (spaceType == SpaceType.ENEMY || spaceType == SpaceType.ENEMY_SPAWN) {
+                InstantiateOpponentCard(space.coordinate, (Direction)UnityEngine.Random.Range(0,3));
+            }
+        }
     }
 
     private void InitializeCards() {
@@ -111,15 +110,11 @@ public class BoardManager : MonoBehaviour {
     }
 
     public void DrawCards() {
-        var coordinates = new List<Vector2Int>();
-        coordinates.Add(new Vector2Int(1, 1));
-        coordinates.Add(new Vector2Int(2, 1));
-        coordinates.Add(new Vector2Int(1, 2));
-        coordinates.Add(new Vector2Int(2, 2));
+        var drawSpaces = Board.PlayerDrawSpaces;
 
-        foreach (var coordinate in coordinates) {
-            if (Board.Spaces[coordinate.x, coordinate.y].IsFree)
-                DrawNewPlayerCard(coordinate);
+        foreach (var space in drawSpaces) {
+            if (Board.Spaces[space.coordinate.x, space.coordinate.y].IsFree)
+                DrawNewPlayerCard(space.coordinate);
         }
     }
 
@@ -200,32 +195,32 @@ public class BoardManager : MonoBehaviour {
         var targetCoordinate = to.coordinate;
 
         if (targetCoordinate.y > originCoordinate.y) {
-            return Direction.Up;
+            return Direction.UP;
         } else if (targetCoordinate.y < originCoordinate.y) {
-            return Direction.Down;
+            return Direction.DOWN;
         } else if (targetCoordinate.x > originCoordinate.x) {
-            return Direction.Right;
+            return Direction.RIGHT;
         } else {
-            return Direction.Left;
+            return Direction.LEFT;
         }
     }
 
     public Space GetSpaceFromDirection(Space from, Direction direction) {
         var coordinate = from.coordinate;
         switch (direction) {
-            case Direction.Left:
+            case Direction.LEFT:
                 if (coordinate.x - 1 < 0)
                     return null;
                 return Board.Spaces[coordinate.x - 1, coordinate.y];
-            case Direction.Right:
+            case Direction.RIGHT:
                 if (coordinate.x + 1 > Grid.columns-1)
                     return null;
                 return Board.Spaces[coordinate.x + 1, coordinate.y];
-            case Direction.Up:
+            case Direction.UP:
                 if (coordinate.y + 1 > Grid.rows - 1)
                     return null;
                 return Board.Spaces[coordinate.x, coordinate.y + 1];
-            case Direction.Down:
+            case Direction.DOWN:
                 if (coordinate.y - 1 < 0)
                     return null;
                 return Board.Spaces[coordinate.x, coordinate.y - 1];

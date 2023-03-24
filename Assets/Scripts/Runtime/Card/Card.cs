@@ -11,7 +11,7 @@ public abstract class Card : MonoBehaviour {
     [ReadOnly] public int strength;
     [ReadOnly] public int coins;
     [ReadOnly] public int hitPoints;
-    [ReadOnly] public CardAbility.Type cardAbility;
+    [ReadOnly] public CardAbility.AbilityType cardAbility;
     [ReadOnly] public string description;
     [ReadOnly] public AlignmentType alignment = AlignmentType.NONE;
     private Sprite graphic;
@@ -106,7 +106,7 @@ public abstract class Card : MonoBehaviour {
 
     public void CheckMoveableSpaces() {
         MoveableSpaces.Clear();
-        MoveableSpaces = BoardManager.Instance.Board.GetMoveableSpaces(GetSpace());
+        MoveableSpaces = BoardManager.Instance.Board.GetAdjacentSpaces(GetSpace());
     }
 
     public void ShowActionIndicator() {
@@ -304,10 +304,4 @@ public abstract class Card : MonoBehaviour {
         selectedOutline.SetActive(false);
     }
     #endregion
-}
-
-public enum AlignmentType {
-    NONE = 0,
-    PLAYER = 1,
-    ENEMY = 2
 }
