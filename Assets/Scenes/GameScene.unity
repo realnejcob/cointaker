@@ -624,7 +624,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardPrefab: {fileID: 8214668635992394860, guid: 4fd1205662fd15a47b9816b098018b97, type: 3}
-  currentBoardLayout: {fileID: 11400000, guid: 948f7c061aee6c94a99bbad4573b3e61, type: 2}
+  currentBoardLayout: {fileID: 11400000, guid: 0d7a98bb657b76f449ef3657d4f596dc, type: 2}
+  availableLayouts:
+  - {fileID: 11400000, guid: 0d7a98bb657b76f449ef3657d4f596dc, type: 2}
+  - {fileID: 11400000, guid: 94861114c5b69994aa96874255f8ebf8, type: 2}
+  - {fileID: 11400000, guid: 948f7c061aee6c94a99bbad4573b3e61, type: 2}
+  - {fileID: 11400000, guid: 07c321447d0c3ed4f9ff13600f4403a4, type: 2}
+  - {fileID: 11400000, guid: 979f3287ea0bcd545b48cfc7240918e5, type: 2}
+  - {fileID: 11400000, guid: d61c5011293da264e9ecd45335769600, type: 2}
+  - {fileID: 11400000, guid: 5b21536f23d5b7a4aa1935b75145c96a, type: 2}
+  - {fileID: 11400000, guid: 97e10415cec8c234199d9cf7f9c32585, type: 2}
+  - {fileID: 11400000, guid: 10d8fe899cdd5064584d22889a1ffe56, type: 2}
+  - {fileID: 11400000, guid: 2c72a4f4db0a24d4ea35f13bdcbea0c6, type: 2}
+  - {fileID: 11400000, guid: 7886a75c3edd8e74f8ea4a29ad64df03, type: 2}
   playerCardPrefab: {fileID: 733129442, guid: 8b6d3b68d4734b247bb308035744ceaf, type: 3}
   enemyCardPrefab: {fileID: 1390890012, guid: 83aa67163c0f9b14e95db692a7bdc1f7, type: 3}
   playerDeck:

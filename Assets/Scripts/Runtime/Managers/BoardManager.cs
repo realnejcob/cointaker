@@ -8,6 +8,7 @@ public class BoardManager : MonoBehaviour {
     public Board Board { get; private set; }
     [SerializeField] private Board boardPrefab;
     [SerializeField] private BoardLayout currentBoardLayout;
+    [SerializeField] private List<BoardLayout> availableLayouts = new List<BoardLayout>();
 
     [SerializeField] private PlayerCard playerCardPrefab;
     [SerializeField] private EnemyCard enemyCardPrefab;
@@ -35,6 +36,8 @@ public class BoardManager : MonoBehaviour {
         }
 
         Instance = this;
+
+        InitializeSavedLayout();
 
         battleSystem = GetComponentInChildren<BattleSystem>();
     }
@@ -74,7 +77,7 @@ public class BoardManager : MonoBehaviour {
             }
 
             if (spaceType == SpaceType.ENEMY || spaceType == SpaceType.ENEMY_SPAWN) {
-                InstantiateOpponentCard(space.coordinate, (Direction)UnityEngine.Random.Range(0,3));
+                InstantiateOpponentCard(space.coordinate, (Direction)UnityEngine.Random.Range(0,4));
             }
         }
     }
@@ -230,4 +233,49 @@ public class BoardManager : MonoBehaviour {
     }
 
     #endregion
+
+    private void InitializeSavedLayout() {
+        if (!PlayerPrefs.HasKey("layout")) {
+            PlayerPrefs.SetString("layout", "orig");
+        }
+
+        currentBoardLayout = GetLayoutFromKey(PlayerPrefs.GetString("layout"));
+    }
+
+    public void PrintLayoutKeys() {
+        var keysString = "";
+
+        foreach (var item in availableLayouts) {
+            keysString += $" {item.key }";
+        }
+
+        if (string.IsNullOrEmpty(keysString)) {
+            keysString = "No layouts added in the editor";
+        }
+
+        Debug.Log(keysString);
+    }
+
+    public bool SetBoardLayout(string key) {
+        var newBoardLayout = GetLayoutFromKey(key);
+        if (newBoardLayout == null) {
+            Debug.LogError("Key invalid!");
+            return false;
+        }
+
+        PlayerPrefs.SetString("layout", key);
+        Debug.Log($"Layout set to '{key}'");
+
+        return true;
+    }
+
+    private BoardLayout GetLayoutFromKey(string key) {
+        foreach (var item in availableLayouts) {
+            if (item.key == key) {
+                return item;
+            }
+        }
+
+        return null;
+    }
 }
