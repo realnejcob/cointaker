@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ public class EnemyCard : Card {
     [Space(25)]
     [Header("---")]
     [SerializeField] private MoveDirectionIndicator moveDirectionIndicator;
-    
+
     public Direction MoveDirection {
         get { return moveDirection; }
         set { moveDirection = SetDirection(value); }
@@ -92,6 +91,37 @@ public class EnemyCard : Card {
         }
 
         return false;
+    }
+
+    public int GetBestMove() {
+        int bestMoveValue = -1;
+        Direction bestMoveDirection = moveDirection;
+        foreach (Direction direction in Enum.GetValues(typeof(Direction))) {
+            var nextSpace = BoardManager.Instance.GetSpaceFromDirection(GetSpace(), direction);
+
+            // Negative move value represents null
+            if (nextSpace == null)
+                continue;
+
+            // Zero represents empty
+            if (nextSpace.GetIsMoveable() && nextSpace.IsFree)
+                if (bestMoveValue < 0) {
+                    bestMoveValue = 0;
+                    bestMoveDirection = direction;
+                }
+
+            // Positive values represent the power superiority to the player card
+            if (!nextSpace.IsFree && nextSpace.GetTopCard().alignment == AlignmentType.PLAYER) {
+                int strengthDifference = strength - nextSpace.GetTopCard().strength;
+                if (strengthDifference > bestMoveValue) {
+                    bestMoveValue = strengthDifference;
+                    bestMoveDirection = direction;
+                }
+            }
+        }
+        MoveDirection = bestMoveDirection;
+        SetDirection(bestMoveDirection);
+        return bestMoveValue;
     }
 
     public override void CardSpecificEliminate() {

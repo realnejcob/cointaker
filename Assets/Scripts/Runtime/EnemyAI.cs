@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,11 +48,18 @@ public class EnemyAI : MonoBehaviour {
     private List<EnemyCard> GetNewCardsToMove() {
         var newCardsToMove = new List<EnemyCard>();
         var availableCards = BoardManager.Instance.EnemyCards;
-        if (availableCards.Count < 1)
-            return newCardsToMove;
+        EnemyCard bestCard = availableCards[0];
+        int bestCurrentValue = -1;
+        foreach (var card in availableCards) {
+            // Check values and compare
+            int bestMoveValue = card.GetBestMove();
+            if (bestMoveValue > bestCurrentValue) {
+                bestCurrentValue = bestMoveValue;
+                bestCard = card;
+            }
+        }
 
-        var randomIndex = Random.Range(0, availableCards.Count);
-        newCardsToMove.Add(availableCards[randomIndex]);
+        newCardsToMove.Add(bestCard);
         return newCardsToMove;
     }
 }

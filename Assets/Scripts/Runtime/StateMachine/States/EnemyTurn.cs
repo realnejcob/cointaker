@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class EnemyTurn : State {
     public EnemyTurn(BattleSystem battlesystem) : base(battlesystem) {
@@ -22,7 +21,7 @@ public class EnemyTurn : State {
 
         BoardManager.Instance.DrawCards();
 
-        CheckAllCardsToFlipDirection();
+        UpdateEnemyMoves();
 
         // Check if player is out of cards, then go to lose state
         // Else, continue game loop starting with telegraph
@@ -31,20 +30,24 @@ public class EnemyTurn : State {
     }
 
     private ActionType GetAction() {
-        if (!BattleSystem.enemyAI.HasCardsToMove())
+        if (!BattleSystem.enemyAI.HasCardsToMove()) {
             return ActionType.NONE;
+        }
 
         var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
         var targetSpace = BoardManager.Instance.GetSpaceFromDirection(cardToMove.GetSpace(), cardToMove.MoveDirection);
 
-        if (targetSpace == null)
+        if (targetSpace == null) {
             return ActionType.NONE;
+        }
 
-        if (!targetSpace.GetIsMoveable())
+        if (!targetSpace.GetIsMoveable()) {
             return ActionType.NONE;
+        }
 
-        if (targetSpace.IsFree)
+        if (targetSpace.IsFree) {
             return ActionType.MOVE;
+        }
 
         var targetTopCard = targetSpace.GetTopCard();
 
@@ -90,7 +93,7 @@ public class EnemyTurn : State {
         var cardToMove = BattleSystem.enemyAI.cardsToMove[0];
         var targetCard = BoardManager.Instance.GetSpaceFromDirection(cardToMove.GetSpace(), cardToMove.MoveDirection).GetTopCard();
 
-        var cardsLeftOnTargetSpace = targetCard.GetSpace().CardsCount-1;
+        var cardsLeftOnTargetSpace = targetCard.GetSpace().CardsCount - 1;
         var targetCardCoinsCount = targetCard.CoinsCount();
         targetCard.TakeHitPoint(out var isEliminated);
 
@@ -136,26 +139,11 @@ public class EnemyTurn : State {
         }
     }
 
-    private void CheckAllCardsToFlipDirection() {
+    private void UpdateEnemyMoves() {
         var enemyCards = BoardManager.Instance.EnemyCards;
 
         foreach (var card in enemyCards) {
-            CheckToFlipDirection(card);
+            card.GetBestMove();
         }
-    }
-
-    private void CheckToFlipDirection(EnemyCard cardToMove) {
-        var moveDirection = cardToMove.MoveDirection;
-
-        if (cardToMove.HasEmptySpaceInMoveDirection(out var spaces))
-            return;
-
-        if (cardToMove.IsNextMovePossible(moveDirection))
-            return;
-
-        if (!cardToMove.IsNextMovePossible(cardToMove.GetFlippedDirection(moveDirection)))
-            return;
-
-        cardToMove.FlipDirection();
     }
 }
