@@ -15,7 +15,7 @@ MonoBehaviour:
   id: a4978efc-cb4c-47a5-8eac-d2bde2ad0a84
   displayName: Industrious Farmer
   description: A steward of the earth, a caretaker of life, and a provider for the
-    many
+    many.
   strength: 1
   cardAbility: 0
   cardGraphic: {fileID: 21300000, guid: 7996f5456467b724ead68d19a3daf9fc, type: 3}
