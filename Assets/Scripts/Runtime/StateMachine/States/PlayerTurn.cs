@@ -189,7 +189,7 @@ public class PlayerTurn : State {
                 case AlignmentType.NONE:
                     break;
                 case AlignmentType.PLAYER:
-                    if (targetTopCard.strength == originTopCard.strength)
+                    if (BattleSystem.targetSpace.CardsCount == 1)
                         return ActionType.STACK;
                     break;
                 case AlignmentType.ENEMY:

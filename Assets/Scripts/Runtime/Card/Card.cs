@@ -145,8 +145,14 @@ public abstract class Card : MonoBehaviour {
         var space = GetSpace();
         strength = InitStrength;
 
+        var newStrength = 0;
+        var cards = space.Cards;
+        for (int i = 0; i < cards.Count; i++) {
+            newStrength += cards[i].InitStrength;
+        }
+
         if (space.CardsCount > 1) {
-            strength = strength + space.CardsCount - 1;
+            strength = newStrength;
             strengthTMP.color = ColorManager.Instance.highlightText;
         } else {
             strengthTMP.color = ColorManager.Instance.lightCard;
