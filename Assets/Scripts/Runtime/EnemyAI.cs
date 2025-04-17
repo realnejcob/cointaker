@@ -48,6 +48,10 @@ public class EnemyAI : MonoBehaviour {
     private List<EnemyCard> GetNewCardsToMove() {
         var newCardsToMove = new List<EnemyCard>();
         var availableCards = BoardManager.Instance.EnemyCards;
+
+        if (availableCards.Count <= 0)
+            return newCardsToMove;
+
         EnemyCard bestCard = availableCards[0];
         int bestCurrentValue = -1;
         foreach (var card in availableCards) {
