@@ -11,6 +11,9 @@ public class PlayerCard : Card {
     private float fadeSpeed = 1;
 
     public void FeedbackFlash(FeedbackIndicatorType type) {
+        if (feedbackIndicator == null)
+            return;
+
         if (feedbackIndicatorImage == null)
             feedbackIndicatorImage = feedbackIndicator.GetComponent<Image>();
 
