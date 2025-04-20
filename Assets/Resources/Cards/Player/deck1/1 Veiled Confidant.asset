@@ -17,5 +17,6 @@ MonoBehaviour:
   description: The secrets held by the confidant are like threads in a tapestry,
     each one woven intricately into the fabric of the universe.
   strength: 1
-  cardAbility: 0
+  cardAbilities:
+  - {fileID: 11400000, guid: 55700bf5ea702477aac804fcfbeb10e8, type: 2}
   cardGraphic: {fileID: 21300000, guid: d86c3fe9bcf97ce4a8786bde876c327b, type: 3}

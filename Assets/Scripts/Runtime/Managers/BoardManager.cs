@@ -97,6 +97,34 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
+    public void RecalculateBoard() {
+        foreach (var space in Board.Spaces) {
+            space.UpdateBuffIndicator();
+            space.ResetTempStrengthOnAllCards();
+
+            if (space.CardsCount == 0)
+                continue;
+
+            var topCard = space.GetTopCard();
+            if (topCard.alignment == AlignmentType.ENEMY)
+                continue;
+
+            if (space.CardsCount >= 1) {
+                // Add space buff
+                topCard.TempStrength += space.TempStrength;
+            }
+
+            if (space.CardsCount > 1) {
+                // Add stack buff
+                for (int i = 0; i < space.CardsCount - 1; i++) {
+                    topCard.TempStrength += space.Cards[i].InitStrength;
+                }
+            }
+
+            space.UpdateAllCards();
+        }
+    }
+
     private CardEntity GetNextCardInHand(List<CardEntity> hand) {
         if (hand.Count == 0) return null;
         var entity = hand[0];

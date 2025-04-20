@@ -16,5 +16,5 @@ MonoBehaviour:
   displayName: Sultan's Chef
   description: The chef moves with a grace born of years spent perfecting their craft.
   strength: 2
-  cardAbility: 0
+  cardAbilities: []
   cardGraphic: {fileID: 21300000, guid: 6cb1633a04542c44f86b5fe26df88d4a, type: 3}

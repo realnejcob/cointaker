@@ -56,17 +56,45 @@ public class Board : MonoBehaviour {
         return true;
     }
 
-    public List<Space> GetAdjacentSpaces(Space originSpace) {
+    public List<Space> GetAdjacentSpaces(Space originSpace, int iterations = 1) {
         var list = new List<Space>();
 
-        if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(1, 0), out var spaceRight))
-            list.Add(spaceRight);
-        if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(-1, 0), out var spaceLeft))
-            list.Add(spaceLeft);
-        if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(0, 1), out var spaceUp))
-            list.Add(spaceUp);
-        if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(0, -1), out var spaceDown))
-            list.Add(spaceDown);
+        for (int i = 0; i < iterations; i++) {
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(1, 0), out var spaceRight))
+                list.Add(spaceRight);
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(-1, 0), out var spaceLeft))
+                list.Add(spaceLeft);
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(0, 1), out var spaceUp))
+                list.Add(spaceUp);
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(0, -1), out var spaceDown))
+                list.Add(spaceDown);
+        }
+
+        return list;
+    }
+
+    public List<Space> GetHorizontalSpaces(Space originSpace, int iterations = 1) {
+        var list = new List<Space>();
+
+        for (int i = 0; i < iterations; i++) {
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(1, 0), out var spaceRight))
+                list.Add(spaceRight);
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(-1, 0), out var spaceLeft))
+                list.Add(spaceLeft);
+        }
+
+        return list;
+    }
+
+    public List<Space> GetVerticalSpaces(Space originSpace, int iterations = 1) {
+        var list = new List<Space>();
+
+        for (int i = 0; i < iterations; i++) {
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(0, 1), out var spaceUp))
+                list.Add(spaceUp);
+            if (GetCanMoveToAdjacentSpace(originSpace, new Vector2Int(0, -1), out var spaceDown))
+                list.Add(spaceDown);
+        }
 
         return list;
     }

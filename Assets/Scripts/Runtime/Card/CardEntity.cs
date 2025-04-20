@@ -13,7 +13,7 @@ public class CardEntity : ScriptableObject {
     public string displayName;
     [TextArea] public string description;
     public int strength;
-    public CardAbility.AbilityType cardAbility = CardAbility.AbilityType.None;
+    public List<CardAbilityBase> cardAbilities;
     public Sprite cardGraphic;
 
     private void Awake() {

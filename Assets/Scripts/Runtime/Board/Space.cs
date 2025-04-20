@@ -13,11 +13,13 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
     public int TopCardIndex { get { return CardsCount - 1; } }
 
     public int CoinsOnSpace { get { return GetCoinsOnSpace(); } }
+    public int TempStrength { get; set; }
 
     public List<Card> Cards { get { return cards; } private set { } }
 
     [SerializeField] private List<Card> cards;
     public GameObject isMoveableIndicator;
+    public GameObject buffIndicator;
 
     private Canvas canvas;
 
@@ -68,10 +70,48 @@ public class Space : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoi
         }
     }
 
+    public void ResetTempStrengthOnAllCards() {
+        foreach (var card in cards) {
+            card.TempStrength = 0;
+        }
+    }
+
+    public void UpdateAllCards() {
+        foreach (var card in cards) {
+            card.UpdateUI();
+        }
+    }
+
     public void MoveCoinsToTopCard() {
         var coinsOnSpace = GetCoinsOnSpace();
         ResetCoinsOnAllCards();
         GetTopCard().SetCoins(coinsOnSpace);
+    }
+
+    public bool GetHasEnemy() {
+        foreach (var card in Cards) {
+            if (card.alignment == AlignmentType.ENEMY)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void UpdateBuffIndicator() {
+        if (TempStrength > 0)
+            SetBuffIndicatorActive();
+        else
+            SetBuffIndicatorInactive();
+    }
+
+    private void SetBuffIndicatorActive() {
+        if (!buffIndicator.activeInHierarchy)
+            buffIndicator.SetActive(true);
+    }
+
+    private void SetBuffIndicatorInactive() {
+        if (buffIndicator.activeInHierarchy)
+            buffIndicator.SetActive(false);
     }
 
     #region -- ON POINTER METHODS

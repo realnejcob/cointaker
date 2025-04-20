@@ -22,11 +22,16 @@ public class PlayerTurn : State {
             yield break;
 
         PerformAction(action);
+
+        BoardManager.Instance.RecalculateBoard();
+
         ClearSpaceReferences();
 
         yield return new WaitForSeconds(0.25f);
 
         BoardManager.Instance.DrawCards();
+
+        BoardManager.Instance.RecalculateBoard();
 
         if (BoardManager.Instance.GetTotalPlayerCoins() == 12) {
             BattleSystem.SetState(new Win(BattleSystem));
@@ -80,10 +85,12 @@ public class PlayerTurn : State {
             case ActionType.NONE:
                 break;
             case ActionType.MOVE:
+                TriggerAbility();
                 SplitCoins();
                 Move();
                 break;
             case ActionType.STACK:
+                TriggerAbility();
                 SplitCoins();
                 RestoreAll();
                 Move();
@@ -92,12 +99,15 @@ public class PlayerTurn : State {
             case ActionType.ELIMINATE:
                 SplitCoins();
                 Eliminate();
+                TriggerAbility();
                 Move();
                 break;
             case ActionType.NEUTRALIZE:
+                TriggerAbility();
                 Neutralize();
                 break;
             case ActionType.ATTACK:
+                TriggerAbility();
                 Attack();
                 break;
             default:
@@ -109,12 +119,45 @@ public class PlayerTurn : State {
         var cardToMove = BattleSystem.originSpace.GetTopCard();
         cardToMove.Move(BattleSystem.targetSpace);
         cardToMove.SetStackCounter(BattleSystem.targetSpace.CardsCount);
-        cardToMove.UpdateStackBuff();
+        //cardToMove.UpdateBuff();
     }
 
     private void Stack() {
         BattleSystem.targetSpace.MoveCoinsToTopCard();
-        BattleSystem.targetSpace.GetTopCard().UpdateStackBuff();
+        //BattleSystem.targetSpace.GetTopCard().UpdateBuff();
+    }
+
+    private void TriggerAbility() {
+        var origin = BattleSystem.originSpace;
+        var target = BattleSystem.targetSpace;
+        var card = origin.GetTopCard();
+
+        // Moving from empty to stack
+        if (origin.CardsCount == 1 && target.CardsCount == 1 && !target.GetHasEnemy()) {
+            card.TriggerOnStack(target);
+            return;
+        }
+
+        // Moving from stack to stack
+        if (origin.CardsCount > 1 && target.CardsCount >= 1 && !target.GetHasEnemy()) {
+            card.TriggerOnDestack(origin);
+            card.TriggerOnStack(target);
+        }
+
+        // Moving from stack to enemy eliminate
+        if (origin.CardsCount > 1 && target.CardsCount >= 1 && target.GetHasEnemy() && card.GetTotalStrength() > target.GetTopCard().GetTotalStrength()) {
+            card.TriggerOnDestack(origin);
+        }
+
+        // Moving from stack to enemy neutralize
+        if (origin.CardsCount > 1 && target.CardsCount >= 1 && target.GetHasEnemy() && card.GetTotalStrength() == target.GetTopCard().GetTotalStrength()) {
+            card.TriggerOnDestack(origin);
+        }
+
+        // Moving from stack to empty
+        if (origin.CardsCount > 1 && target.CardsCount == 0) {
+            card.TriggerOnDestack(origin);
+        }
     }
 
     private void Eliminate() {
@@ -193,11 +236,11 @@ public class PlayerTurn : State {
                         return ActionType.STACK;
                     break;
                 case AlignmentType.ENEMY:
-                    if (targetTopCard.strength > originTopCard.strength)
+                    if (targetTopCard.GetTotalStrength() > originTopCard.GetTotalStrength())
                         return ActionType.ATTACK;
-                    if (originTopCard.strength > targetTopCard.strength)
+                    if (originTopCard.GetTotalStrength() > targetTopCard.GetTotalStrength())
                         return ActionType.ELIMINATE;
-                    if (originTopCard.strength == targetTopCard.strength)
+                    if (originTopCard.GetTotalStrength() == targetTopCard.GetTotalStrength())
                         return ActionType.NEUTRALIZE;
                     break;
                 default:

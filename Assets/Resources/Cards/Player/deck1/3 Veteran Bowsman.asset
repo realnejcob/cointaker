@@ -17,5 +17,5 @@ MonoBehaviour:
   description: The wind whispers secrets to the hardened warrior, guiding their aim
     like an unseen hand.
   strength: 3
-  cardAbility: 0
+  cardAbilities: []
   cardGraphic: {fileID: 21300000, guid: 77672c29f3b00744bab1f9afe999aa27, type: 3}

@@ -11,7 +11,7 @@ public abstract class Card : MonoBehaviour {
     [ReadOnly] public int strength;
     [ReadOnly] public int coins;
     [ReadOnly] public int hitPoints;
-    [ReadOnly] public CardAbility.AbilityType cardAbility;
+    [ReadOnly] public List<CardAbilityBase> cardAbilities;
     [ReadOnly] public string description;
     [ReadOnly] public AlignmentType alignment = AlignmentType.NONE;
     private Sprite graphic;
@@ -33,6 +33,7 @@ public abstract class Card : MonoBehaviour {
     public Canvas Canvas { get; private set; }
 
     public int InitStrength { get; private set; }
+    public int TempStrength { get; set; }
 
     private bool isZoomPreviewing = false;
     private Vector3 initPosition;
@@ -55,39 +56,37 @@ public abstract class Card : MonoBehaviour {
         stackCounter.SetCountText(0);
 
         InitializeStats(cardtype);
-        InitializeDisplay();
 
         initPosition = transform.position;
         desiredPosition = initPosition;
         InitStrength = strength;
 
         name = $"{alignment}_{displayName}";
+
+        InitializeUI();
+        UpdateUI();
     }
     private void InitializeStats(CardEntity cardEntity) {
         displayName = cardEntity.displayName;
         strength = cardEntity.strength;
-        cardAbility = cardEntity.cardAbility;
+        cardAbilities = cardEntity.cardAbilities;
         graphic = cardEntity.cardGraphic;
         description = cardEntity.description;
     }
 
-    private void InitializeDisplay() {
+    private void InitializeUI() {
         displayNameTMP.text = displayName.ToString();
-        UpdateStrengthDisplay();
-        UpdateCoinsDisplay();
         descriptionTMP.text = GetDescriptionText();
         cardGraphicImage.sprite = graphic;
-
         selectedOutline.SetActive(false);
     }
 
     private string GetDescriptionText() {
-        var abilityText = CardAbility.GetDescription(cardAbility);
-        if (!string.IsNullOrEmpty(abilityText)) {
-            return abilityText;
-        }
+        return "";
+    }
 
-        return description;
+    public int GetTotalStrength() {
+        return InitStrength + TempStrength;
     }
 
     public Space GetSpace() {
@@ -124,41 +123,21 @@ public abstract class Card : MonoBehaviour {
 
     public void SetCoins(int newCoins) {
         coins = newCoins;
-        UpdateCoinsDisplay();
+        UpdateUI();
     }
 
     public void AddCoins(int toAdd) {
         coins += toAdd;
-        UpdateCoinsDisplay();
+        UpdateUI();
     }
 
     public void RemoveCoins(int toRemove) {
         coins -= toRemove;
-        UpdateCoinsDisplay();
+        UpdateUI();
     }
 
     public int CoinsCount() {
         return coins;
-    }
-
-    public void UpdateStackBuff() {
-        var space = GetSpace();
-        strength = InitStrength;
-
-        var newStrength = 0;
-        var cards = space.Cards;
-        for (int i = 0; i < cards.Count; i++) {
-            newStrength += cards[i].InitStrength;
-        }
-
-        if (space.CardsCount > 1) {
-            strength = newStrength;
-            strengthTMP.color = ColorManager.Instance.highlightText;
-        } else {
-            strengthTMP.color = ColorManager.Instance.lightCard;
-        }
-
-        UpdateStrengthDisplay();
     }
 
     public void RefreshDesiredPosition() {
@@ -222,6 +201,28 @@ public abstract class Card : MonoBehaviour {
 
         from.RemoveCoins(amount);
         AddCoins(amount);
+    }
+
+    public void TriggerOnStack(Space space) {
+        var abilities = cardAbilities;
+
+        if (abilities.Count == 0)
+            return;
+
+        foreach (var ability in abilities) {
+            ability.OnStack(gameObject, space);
+        }
+    }
+
+    public void TriggerOnDestack(Space space) {
+        var abilities = cardAbilities;
+
+        if (abilities.Count == 0)
+            return;
+
+        foreach (var ability in abilities) {
+            ability.OnDestack(gameObject, space);
+        }
     }
 
     #region MOVE
@@ -294,12 +295,16 @@ public abstract class Card : MonoBehaviour {
         Canvas.sortingOrder = desiredSortingOrder;
     }
 
-    private void UpdateStrengthDisplay() {
-        strengthTMP.text = strength.ToString();
-    }
-
-    private void UpdateCoinsDisplay() {
+    public void UpdateUI() {
         coinsTMP.text = coins.ToString();
+
+        strengthTMP.text = GetTotalStrength().ToString();
+
+        if (GetTotalStrength() > InitStrength) {
+            strengthTMP.color = ColorManager.Instance.highlightText;
+        } else {
+            strengthTMP.color = ColorManager.Instance.lightCard;
+        }
     }
 
     public void ShowSelectedOutline() {

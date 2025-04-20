@@ -17,5 +17,5 @@ MonoBehaviour:
   description: Their attire is impeccable, every detail carefully chosen to project
     an image of power and sophistication.
   strength: 3
-  cardAbility: 0
+  cardAbilities: []
   cardGraphic: {fileID: 21300000, guid: 8e223a5a876b8cf44831c6cd48a5ff83, type: 3}

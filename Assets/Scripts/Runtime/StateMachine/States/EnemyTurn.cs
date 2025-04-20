@@ -12,6 +12,7 @@ public class EnemyTurn : State {
         yield return new WaitForSeconds(0.5f);
 
         PerformAction(GetAction());
+        BoardManager.Instance.RecalculateBoard();
 
         yield return new WaitForSeconds(0.5f);
 
@@ -20,6 +21,7 @@ public class EnemyTurn : State {
         yield return new WaitForSeconds(0.25f);
 
         BoardManager.Instance.DrawCards();
+        BoardManager.Instance.RecalculateBoard();
 
         UpdateEnemyMoves();
 
@@ -97,15 +99,19 @@ public class EnemyTurn : State {
         var targetCardCoinsCount = targetCard.CoinsCount();
         targetCard.TakeHitPoint(out var isEliminated);
 
-        if (isEliminated && cardsLeftOnTargetSpace <= 0) {
-            cardToMove.AddCoins(targetCardCoinsCount);
-            MoveSingleCard();
-            return;
-        }
+        if (isEliminated) {
+            targetCard.TriggerOnDestack(targetCard.GetSpace());
 
-        if (isEliminated && cardsLeftOnTargetSpace > 0) {
-            cardToMove.AddCoins(targetCardCoinsCount);
-            return;
+            if (cardsLeftOnTargetSpace <= 0) {
+                cardToMove.AddCoins(targetCardCoinsCount);
+                MoveSingleCard();
+                return;
+            }
+
+            if (cardsLeftOnTargetSpace > 0) {
+                cardToMove.AddCoins(targetCardCoinsCount);
+                return;
+            }
         }
 
         cardToMove.StealCoins(targetCard, 1);
