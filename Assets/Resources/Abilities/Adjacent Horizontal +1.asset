@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e9e2b51805b41f3a952124f85b7ab5, type: 3}
   m_Name: Adjacent Horizontal +1
   m_EditorClassIdentifier: 
-  abilityName: Adjacent Horizontal +2
+  abilityName: Adjacent Horizontal +1
   abilityDescription: 
   amount: 1
   iterations: 2

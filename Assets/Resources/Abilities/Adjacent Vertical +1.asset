@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82e9e2b51805b41f3a952124f85b7ab5, type: 3}
   m_Name: Adjacent Vertical +1
   m_EditorClassIdentifier: 
-  abilityName: Adjacent Vertical +2
+  abilityName: Adjacent Vertical +1
   abilityDescription: 
   amount: 1
   iterations: 2
