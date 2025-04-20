@@ -112,7 +112,7 @@ public class EnemyCard : Card {
 
             // Positive values represent the power superiority to the player card
             if (!nextSpace.IsFree && nextSpace.GetTopCard().alignment == AlignmentType.PLAYER) {
-                int strengthDifference = strength - nextSpace.GetTopCard().strength;
+                int strengthDifference = strength - nextSpace.GetTopCard().GetTotalStrength();
                 if (strengthDifference > bestMoveValue) {
                     bestMoveValue = strengthDifference;
                     bestMoveDirection = direction;
